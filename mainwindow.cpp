@@ -9,14 +9,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(DB_PATH);
-    qDebug() << db.databaseName();
+    //qDebug() << db.databaseName();
     qDebug() << db.open();
+    QStringList tableList = db.tables();
+    qDebug() << tableList;
+
+    sample = new QSqlTableModel(this);
+    sample->setTable(tableList[4]);
+    sample->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    sample->select();
+    ui->sampleView->setModel(sample);
+    ui->sampleView->resizeColumnsToContents();
+
+    data = new QSqlTableModel(this);
+    data->setTable(tableList[3]);
+    data->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    data->select();
+    ui->dataView->setModel(data);
+    ui->dataView->resizeColumnsToContents();
 
     editor = NULL;
 
-    QStringList tableList = db.tables();
-
-    ShowTable(tableList[0]);
+    ShowTable(tableList[4]);
 
     updateCombox(tableList[0]);
 
@@ -25,30 +39,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::AddEntry(QString tableName, QVector<QString> values)
-{
-    int colSize = GetTableColNumber(tableName);
-    if( values.size() != colSize) return;
-
-    QString val, temp;
-    val.sprintf("(%s,", values[0]);
-    for(int i = 1; i < colSize-1; i++){
-        temp.sprintf("%s,", values[i]);
-        val += temp;
-    }
-    temp.sprintf("%s)", values[colSize-1]);
-    val += temp;
-
-    QString cmd;
-    cmd = "INSERT INTO " + tableName + "VALUES" + val;
-
-    qDebug() << cmd;
-
-    QSqlQuery query;
-    query.exec(cmd);
-
 }
 
 QStringList MainWindow::GetTableColEntries(QString tableName, int col)
@@ -111,7 +101,6 @@ void MainWindow::ShowTable(QString tableName)
 
 void MainWindow::updateCombox(QString tableName)
 {
-    qDebug() << "update Combox";
     QStringList hostList = GetTableColEntries(tableName, 0);
     ui->comboBox_1->clear();
     ui->comboBox_1->addItems(hostList);
@@ -119,9 +108,18 @@ void MainWindow::updateCombox(QString tableName)
 
 void MainWindow::on_pushButton_EditEntry_clicked()
 {
-    editor = new TableEditor("Host");
+    editor = new TableEditor("Chemical");
+    disconnect(editor);
     connect(editor, SIGNAL(closed(QString)), this, SLOT(updateCombox(QString)));
     editor->show();
-    disconnect(editor, SIGNAL(closed(QString)), this, SLOT(updateCombox(QString)));
 }
 
+
+void MainWindow::on_pushButton_SelectSample_clicked()
+{
+    QItemSelectionModel *selmodel = ui->sampleView->selectionModel();
+    QModelIndex current = selmodel->currentIndex(); // the "current" item
+
+    qDebug() << current;
+
+}

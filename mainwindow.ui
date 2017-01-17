@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>713</width>
+    <height>506</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,18 +17,23 @@
    <widget class="QComboBox" name="comboBox_1">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>60</y>
+      <x>30</x>
+      <y>10</y>
       <width>151</width>
-      <height>22</height>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_EditEntry">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>60</y>
+      <x>190</x>
+      <y>10</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -37,13 +42,46 @@
      <string>Edit Entry</string>
     </property>
    </widget>
+   <widget class="QTableView" name="sampleView">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>581</width>
+      <height>151</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableView" name="dataView">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>260</y>
+      <width>581</width>
+      <height>161</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_SelectSample">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>80</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>713</width>
      <height>21</height>
     </rect>
    </property>

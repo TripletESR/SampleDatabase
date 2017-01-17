@@ -62,11 +62,10 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
 
-    QStringList fieldNameList = GetTableFieldNameList();
-
-    for( int i = 0 ; i < fieldNameList.size(); i++){
-        model->setHeaderData(i, Qt::Horizontal, fieldNameList[i]);
-    }
+    //QStringList fieldNameList = GetTableFieldNameList();
+    //for( int i = 0 ; i < fieldNameList.size(); i++){
+    //    model->setHeaderData(i, Qt::Horizontal, fieldNameList[i]);
+    //}
 
     view = new QTableView;
     view->setModel(model);

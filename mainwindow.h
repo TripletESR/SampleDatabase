@@ -21,20 +21,22 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void AddEntry(QString tableName, QVector<QString> values);
-    void DeleteEntry(QString tableName, int entry_ID);
     QStringList GetTableColEntries(QString tableName, int col);
     int GetTableColNumber(QString tableName);
     void ShowTable(QString tableName);
-
 
 private slots:
 
     void on_pushButton_EditEntry_clicked();
     void updateCombox(QString tableName);
 
+    void on_pushButton_SelectSample_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QSqlTableModel *sample;
+    QSqlTableModel *data;
+
     QSqlDatabase db;
     TableEditor *editor;
 };

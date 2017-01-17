@@ -12,6 +12,6 @@ const QString LOG_PATH = DATA_PATH + "DAQ_Log/";
 const QString HALL_DIR_PATH = DATA_PATH + "Hall_data/";
 const QString HALL_PATH = HALL_DIR_PATH + "Hall_pars.txt";
 const QString APP_PATH = DESKTOP_PATH + "SampleDatabase/";
-const QString DB_PATH = APP_PATH + "test.db";
+const QString DB_PATH = APP_PATH + "example.db";
 
 #endif // CONSTANT_H
