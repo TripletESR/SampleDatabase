@@ -52,6 +52,7 @@
 #define TABLEEDITOR_H
 
 #include <QDialog>
+#include <QTableView>
 
 QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
@@ -59,7 +60,6 @@ class QPushButton;
 class QSqlTableModel;
 QT_END_NAMESPACE
 
-//! [0]
 class TableEditor : public QWidget
 {
     Q_OBJECT
@@ -69,17 +69,20 @@ public:
 
 private slots:
     void submit();
-    //void addEntry();
+    void addEntry();
+    void deleteEntry();
     QStringList GetTableFieldNameList();
 
 private:
     QString tableName;
+    QTableView *view;
     QPushButton *submitButton;
     QPushButton *revertButton;
+    QPushButton *insertButton;
+    QPushButton *deleteButton;
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
     QSqlTableModel *model;
 };
-//! [0]
 
 #endif

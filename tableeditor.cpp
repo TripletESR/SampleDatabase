@@ -64,28 +64,32 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
 
     QStringList fieldNameList = GetTableFieldNameList();
 
-    qDebug() << fieldNameList;
-
     for( int i = 0 ; i < fieldNameList.size(); i++){
         model->setHeaderData(i, Qt::Horizontal, fieldNameList[i]);
     }
 
-    QTableView *view = new QTableView;
+    view = new QTableView;
     view->setModel(model);
     view->resizeColumnsToContents();
 
     submitButton = new QPushButton(tr("Submit"));
-    submitButton->setDefault(true);
+    //submitButton->setDefault(true);
     revertButton = new QPushButton(tr("&Revert"));
+    insertButton = new QPushButton("Add new entry");
+    deleteButton = new QPushButton("Delete Entry");
     quitButton = new QPushButton(tr("Quit"));
 
     buttonBox = new QDialogButtonBox(Qt::Vertical);
     buttonBox->addButton(submitButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(revertButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(insertButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(deleteButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     connect(submitButton, SIGNAL(clicked()), this, SLOT(submit()));
     connect(revertButton, SIGNAL(clicked()), model, SLOT(revertAll()));
+    connect(insertButton, SIGNAL(clicked()), this, SLOT(addEntry()));
+    connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteEntry()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
@@ -107,6 +111,19 @@ void TableEditor::submit()
                              tr("The database reported an error: %1")
                              .arg(model->lastError().text()));
     }
+}
+
+void TableEditor::addEntry()
+{
+    model->insertRow(model->rowCount());
+}
+
+void TableEditor::deleteEntry()
+{
+    QItemSelectionModel *selmodel = view->selectionModel();
+    QModelIndex current = selmodel->currentIndex(); // the "current" item
+
+    model->removeRow(current.row());
 }
 
 QStringList TableEditor::GetTableFieldNameList()

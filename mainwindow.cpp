@@ -16,9 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qDebug() << tableList;
 
-    ShowTable(tableList[4]);
+    ShowTable(tableList[0]);
 
-    QStringList hostList = GetTableColEntries(tableList[4], 1);
+    QStringList hostList = GetTableColEntries(tableList[0], 0);
     ui->comboBox_1->addItems(hostList);
 
 }
@@ -112,6 +112,6 @@ void MainWindow::ShowTable(QString tableName)
 
 void MainWindow::on_pushButton_EditEntry_clicked()
 {
-    TableEditor *editor = new TableEditor("Sample");
+    TableEditor *editor = new TableEditor("Host");
     editor->show();
 }
