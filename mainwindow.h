@@ -6,6 +6,7 @@
 #include <QtSql>
 #include <QVector>
 #include "constant.h"
+#include "tableeditor.h"
 
 
 namespace Ui {
@@ -22,10 +23,17 @@ public:
 
     void AddEntry(QString tableName, QVector<QString> values);
     void DeleteEntry(QString tableName, int entry_ID);
+    QStringList GetTableColEntries(QString tableName, int col);
+    int GetTableColNumber(QString tableName);
     void ShowTable(QString tableName);
+
+private slots:
+
+    void on_pushButton_EditEntry_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QSqlDatabase db;
 };
 
 #endif // MAINWINDOW_H
