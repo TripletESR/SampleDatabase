@@ -27,13 +27,16 @@ public:
     int GetTableColNumber(QString tableName);
     void ShowTable(QString tableName);
 
+
 private slots:
 
     void on_pushButton_EditEntry_clicked();
+    void updateCombox(QString tableName);
 
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
+    TableEditor *editor;
 };
 
 #endif // MAINWINDOW_H

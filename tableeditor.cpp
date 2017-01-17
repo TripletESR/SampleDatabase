@@ -90,7 +90,7 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     connect(revertButton, SIGNAL(clicked()), model, SLOT(revertAll()));
     connect(insertButton, SIGNAL(clicked()), this, SLOT(addEntry()));
     connect(deleteButton, SIGNAL(clicked()), this, SLOT(deleteEntry()));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(closing()));
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
     mainLayout->addWidget(view);
@@ -98,6 +98,7 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     setLayout(mainLayout);
 
     setWindowTitle("Cached [ " + tableName + " ] Table");
+
 }
 
 void TableEditor::submit()

@@ -67,10 +67,18 @@ class TableEditor : public QWidget
 public:
     explicit TableEditor(const QString &tableName, QWidget *parent = 0);
 
+signals:
+    void closed(QString name);
+
 private slots:
     void submit();
     void addEntry();
     void deleteEntry();
+    void closing(){
+        emit closed(tableName);
+        close();
+    }
+
     QStringList GetTableFieldNameList();
 
 private:

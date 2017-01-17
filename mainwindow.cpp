@@ -12,14 +12,13 @@ MainWindow::MainWindow(QWidget *parent) :
     qDebug() << db.databaseName();
     qDebug() << db.open();
 
-    QStringList tableList = db.tables();
+    editor = NULL;
 
-    qDebug() << tableList;
+    QStringList tableList = db.tables();
 
     ShowTable(tableList[0]);
 
-    QStringList hostList = GetTableColEntries(tableList[0], 0);
-    ui->comboBox_1->addItems(hostList);
+    updateCombox(tableList[0]);
 
 }
 
@@ -110,8 +109,19 @@ void MainWindow::ShowTable(QString tableName)
 
 }
 
+void MainWindow::updateCombox(QString tableName)
+{
+    qDebug() << "update Combox";
+    QStringList hostList = GetTableColEntries(tableName, 0);
+    ui->comboBox_1->clear();
+    ui->comboBox_1->addItems(hostList);
+}
+
 void MainWindow::on_pushButton_EditEntry_clicked()
 {
-    TableEditor *editor = new TableEditor("Host");
+    editor = new TableEditor("Host");
+    connect(editor, SIGNAL(closed(QString)), this, SLOT(updateCombox(QString)));
     editor->show();
+    disconnect(editor, SIGNAL(closed(QString)), this, SLOT(updateCombox(QString)));
 }
+
