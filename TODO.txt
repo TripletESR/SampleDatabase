@@ -5,7 +5,6 @@
 5) Show spectrum of the sample? chemical?
 6) Show contour plot of the data?
 7) record analysed a Ta b Tb?
-8) Directly edit Sample as if MS Access
 
 A1) able to choose sample in DAQ
 A2) able to add Sample in DAQ

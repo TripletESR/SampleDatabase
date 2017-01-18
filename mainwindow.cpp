@@ -6,7 +6,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    newSampleDialog = new NewSampleDialog(this);
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(DB_PATH);
@@ -15,15 +14,28 @@ MainWindow::MainWindow(QWidget *parent) :
     QStringList tableList = db.tables();
     qDebug() << tableList;
 
-    sample = new QSqlTableModel(this);
+    sample = new QSqlRelationalTableModel(ui->sampleView);
     sample->setTable(tableList[4]);
     sample->setEditStrategy(QSqlTableModel::OnManualSubmit);
     sample->select();
+
+    int chemicalIdx = sample->fieldIndex("Chemical");
+    sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "NAME", "NAME"));
+    int hostIdx = sample->fieldIndex("Host");
+    sample->setRelation(hostIdx, QSqlRelation("Host", "NAME", "NAME"));
+    int solventIdx = sample->fieldIndex("Solvent");
+    sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
+
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
+    ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
+    ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
+    ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
     data = new QSqlTableModel(this);
-    data->setTable(tableList[3]);
+    data->setTable(tableList[0]);
     data->setEditStrategy(QSqlTableModel::OnManualSubmit);
     data->select();
     ui->dataView->setModel(data);
@@ -33,9 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ShowTable(tableList[4]);
 
-    updateCombox(tableList[0]);
+    updateCombox(tableList[1]);
 
-    qDebug() << sample->fieldIndex("Name");
+    //qDebug() << sample->fieldIndex("Name");
 
 }
 
@@ -104,7 +116,7 @@ void MainWindow::ShowTable(QString tableName)
 
 void MainWindow::updateCombox(QString tableName)
 {
-    QStringList hostList = GetTableColEntries(tableName, 0);
+    QStringList hostList = GetTableColEntries(tableName, 1);
     ui->comboBox_1->clear();
     ui->comboBox_1->addItems(hostList);
 }
@@ -127,18 +139,10 @@ void MainWindow::on_pushButton_SelectSample_clicked()
 
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    if(newSampleDialog->isHidden()){
-        newSampleDialog->show();
-    }
-}
-
-
 void MainWindow::on_comboBox_1_currentTextChanged(const QString &arg1)
 {
-    QStringList hostList0 = GetTableColEntries("Chemical", 0);
-    QStringList hostList1 = GetTableColEntries("Chemical", 1);
+    QStringList hostList0 = GetTableColEntries("Chemical", 1);
+    QStringList hostList1 = GetTableColEntries("Chemical", 2);
 
     for(int i = 0; i < hostList0.size(); i ++ ){
         if( hostList0[i] == arg1) {
@@ -147,4 +151,17 @@ void MainWindow::on_comboBox_1_currentTextChanged(const QString &arg1)
         }
     }
 
+}
+
+void MainWindow::on_pushButton_sumbitSample_clicked()
+{
+    //sample->database().transaction();
+    if (sample->submitAll()) {
+    //    sample->database().commit();
+    } else {
+        sample->database().rollback();
+        QMessageBox::warning(this, tr("Cached Table"),
+                             tr("The database reported an error: %1")
+                             .arg(sample->lastError().text()));
+    }
 }

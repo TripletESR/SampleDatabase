@@ -14,13 +14,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    tableeditor.cpp \
-    newsampledialog.cpp
+    tableeditor.cpp
 
 HEADERS  += mainwindow.h \
     constant.h \
-    tableeditor.h \
-    newsampledialog.h
+    tableeditor.h
 
-FORMS    += mainwindow.ui \
-    newsampledialog.ui
+FORMS    += mainwindow.ui
