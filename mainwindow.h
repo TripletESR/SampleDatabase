@@ -7,6 +7,7 @@
 #include <QVector>
 #include "constant.h"
 #include "tableeditor.h"
+#include "newsampledialog.h"
 
 
 namespace Ui {
@@ -32,6 +33,8 @@ private slots:
 
     void on_pushButton_SelectSample_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlTableModel *sample;
@@ -39,6 +42,8 @@ private:
 
     QSqlDatabase db;
     TableEditor *editor;
+
+    NewSampleDialog * newSampleDialog;
 };
 
 #endif // MAINWINDOW_H

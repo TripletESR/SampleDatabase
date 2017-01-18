@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    newSampleDialog = new NewSampleDialog(this);
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(DB_PATH);
@@ -122,4 +123,11 @@ void MainWindow::on_pushButton_SelectSample_clicked()
 
     qDebug() << current;
 
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(newSampleDialog->isHidden()){
+        newSampleDialog->show();
+    }
 }
