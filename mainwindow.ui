@@ -101,6 +101,16 @@
      <string>Modify Data Table</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lineEdit_ChemFormula">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>40</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
