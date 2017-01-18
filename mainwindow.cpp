@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     updateCombox(tableList[0]);
 
+    qDebug() << sample->fieldIndex("Name");
+
 }
 
 MainWindow::~MainWindow()
@@ -130,4 +132,19 @@ void MainWindow::on_pushButton_clicked()
     if(newSampleDialog->isHidden()){
         newSampleDialog->show();
     }
+}
+
+
+void MainWindow::on_comboBox_1_currentTextChanged(const QString &arg1)
+{
+    QStringList hostList0 = GetTableColEntries("Chemical", 0);
+    QStringList hostList1 = GetTableColEntries("Chemical", 1);
+
+    for(int i = 0; i < hostList0.size(); i ++ ){
+        if( hostList0[i] == arg1) {
+            ui->lineEdit_ChemFormula->setText(hostList1[i]);
+            break;
+        }
+    }
+
 }
