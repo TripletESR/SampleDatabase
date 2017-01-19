@@ -1,0 +1,13 @@
+1) group *db and picture -> dbDirectory
+2) find a way to "Select Sample" then auto filter "Data"
+3) prevent double to edit in Sample
+4) Show picture of chemical
+5) Show spectrum of the sample? chemical?
+6) Show contour plot of the data?
+7) record analysed a Ta b Tb?
+
+A1) able to choose sample in DAQ
+A2) able to add Sample in DAQ
+A3) able to add Data in DAQ
+
+B1) able to load data from dataTable, which can filter Chemical, Sample

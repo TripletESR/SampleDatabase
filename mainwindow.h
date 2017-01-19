@@ -5,6 +5,9 @@
 #include <QDebug>
 #include <QtSql>
 #include <QVector>
+#include <QSqlRelationalTableModel>
+#include <QMessageBox>
+#include <QDataWidgetMapper>
 #include "constant.h"
 #include "tableeditor.h"
 
@@ -32,9 +35,13 @@ private slots:
 
     void on_pushButton_SelectSample_clicked();
 
+    void on_comboBox_1_currentTextChanged(const QString &arg1);
+
+    void on_pushButton_sumbitSample_clicked();
+
 private:
     Ui::MainWindow *ui;
-    QSqlTableModel *sample;
+    QSqlRelationalTableModel *sample;
     QSqlTableModel *data;
 
     QSqlDatabase db;
