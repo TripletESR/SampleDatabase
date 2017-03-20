@@ -241,3 +241,11 @@ void MainWindow::on_pushButton_revertData_clicked()
 
     statusBar()->showMessage("revert add/delete.");
 }
+
+void MainWindow::on_pushButton_open_clicked()
+{
+    // open the analysis program
+    //QProcess process;
+    //QString file = QDir::homepath + "file.exe";
+    //process.start(file);
+}

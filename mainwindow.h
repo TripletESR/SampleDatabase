@@ -49,6 +49,8 @@ private slots:
     void on_pushButton_deleteDataEntry_clicked();
     void on_pushButton_revertData_clicked();
 
+    void on_pushButton_open_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *sample;
