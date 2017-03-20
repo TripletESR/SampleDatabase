@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
     ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
+    ui->sampleView->setItemDelegateForColumn(6, new DateFormatDelegate() );
     //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
     ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -43,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     data->select();
     ui->dataView->setModel(data);
     ui->dataView->resizeColumnsToContents();
+
+    ui->dataView->setItemDelegateForColumn(2, new DateFormatDelegate());
 
     //====================== Other things
     editor = NULL;

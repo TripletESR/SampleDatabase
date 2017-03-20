@@ -11,6 +11,7 @@
 #include <QDataWidgetMapper>
 #include "constant.h"
 #include "tableeditor.h"
+#include "dateformatdelegate.h"
 
 
 namespace Ui {
