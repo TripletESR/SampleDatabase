@@ -9,16 +9,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(DB_PATH);
-    //qDebug() << db.databaseName();
-    qDebug() << db.open();
+    qDebug() << db.databaseName();
+    qDebug() << "database open? " << db.open();
     QStringList tableList = db.tables();
     qDebug() << tableList;
 
+    //===================== set up the sample-table
     sample = new QSqlRelationalTableModel(ui->sampleView);
-    sample->setTable(tableList[4]);
+    sample->setTable("Sample");
     sample->setEditStrategy(QSqlTableModel::OnManualSubmit);
     sample->select();
 
+    //set relation, so that can choose directly on the table
     int chemicalIdx = sample->fieldIndex("Chemical");
     sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "NAME", "NAME"));
     int hostIdx = sample->fieldIndex("Host");
@@ -29,11 +31,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
     ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
-    ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
+    //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
     ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
+    //====================== set up the data-table
     data = new QSqlTableModel(this);
     data->setTable(tableList[0]);
     data->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -41,11 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dataView->setModel(data);
     ui->dataView->resizeColumnsToContents();
 
+    //====================== Other things
     editor = NULL;
 
     ShowTable(tableList[4]);
-
-    updateCombox(tableList[1]);
+    updateChemicalCombox(tableList[1]);
 
     //qDebug() << sample->fieldIndex("Name");
 
@@ -114,32 +117,22 @@ void MainWindow::ShowTable(QString tableName)
 
 }
 
-void MainWindow::updateCombox(QString tableName)
+void MainWindow::updateChemicalCombox(QString tableName)
 {
     QStringList hostList = GetTableColEntries(tableName, 1);
-    ui->comboBox_1->clear();
-    ui->comboBox_1->addItems(hostList);
+    ui->comboBox_chemical->clear();
+    ui->comboBox_chemical->addItems(hostList);
 }
 
-void MainWindow::on_pushButton_EditEntry_clicked()
+void MainWindow::on_pushButton_editChemical_clicked()
 {
     editor = new TableEditor("Chemical");
     disconnect(editor);
-    connect(editor, SIGNAL(closed(QString)), this, SLOT(updateCombox(QString)));
+    connect(editor, SIGNAL(closed(QString)), this, SLOT(updateChemicalCombox(QString)));
     editor->show();
 }
 
-
-void MainWindow::on_pushButton_SelectSample_clicked()
-{
-    QItemSelectionModel *selmodel = ui->sampleView->selectionModel();
-    QModelIndex current = selmodel->currentIndex(); // the "current" item
-
-    qDebug() << current;
-
-}
-
-void MainWindow::on_comboBox_1_currentTextChanged(const QString &arg1)
+void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
 {
     QStringList hostList0 = GetTableColEntries("Chemical", 1);
     QStringList hostList1 = GetTableColEntries("Chemical", 2);
@@ -151,6 +144,23 @@ void MainWindow::on_comboBox_1_currentTextChanged(const QString &arg1)
         }
     }
 
+    //TODO select sample
+    QString filter = "Chemical='" + arg1 + "'";
+    qDebug() << filter  ;
+    sample->setFilter(filter);
+
+}
+
+void MainWindow::on_pushButton_selectSample_clicked()
+{
+    //TODO select data
+    QModelIndex current = ui->sampleView->selectionModel()->currentIndex(); // the "current" item
+    QString sampleName = sample->index(current.row(), 1).data().toString();
+
+    QString filter = "Sample='" + sampleName + "'";
+    qDebug() << filter;
+    data->setFilter(filter);
+
 }
 
 void MainWindow::on_pushButton_sumbitSample_clicked()
@@ -158,10 +168,73 @@ void MainWindow::on_pushButton_sumbitSample_clicked()
     //sample->database().transaction();
     if (sample->submitAll()) {
     //    sample->database().commit();
+        statusBar()->showMessage("Sample Database wriiten.");
     } else {
         sample->database().rollback();
         QMessageBox::warning(this, tr("Cached Table"),
                              tr("The database reported an error: %1")
                              .arg(sample->lastError().text()));
     }
+}
+
+void MainWindow::on_pushButton_addSampleEntry_clicked()
+{
+    sample->insertRow(sample->rowCount());
+    ui->sampleView->scrollToBottom();
+}
+
+void MainWindow::on_pushButton_deleteSampleEntry_clicked()
+{
+    QModelIndex current = ui->sampleView->selectionModel()->currentIndex(); // the "current" item
+    sample->removeRow(current.row());
+
+    QString msg;
+    msg.sprintf("Deleted Row #%d.", current.row()+1);
+    statusBar()->showMessage(msg);
+}
+
+void MainWindow::on_pushButton_revertSample_clicked()
+{
+    sample->revertAll();
+    sample->submitAll();
+
+    statusBar()->showMessage("revert add/delete.");
+}
+
+void MainWindow::on_pushButton_submitData_clicked()
+{
+    //sample->database().transaction();
+    if (data->submitAll()){
+        statusBar()->showMessage("Data Database wriiten.");
+    } else {
+        data->database().rollback();
+        QMessageBox::warning(this, tr("Cached Table"),
+                             tr("The database reported an error: %1")
+                             .arg(data->lastError().text()));
+    }
+}
+
+
+void MainWindow::on_pushButton_addDataEntry_clicked()
+{
+    data->insertRow(data->rowCount());
+    ui->dataView->scrollToBottom();
+}
+
+void MainWindow::on_pushButton_deleteDataEntry_clicked()
+{
+    QModelIndex current = ui->dataView->selectionModel()->currentIndex();
+    data->removeRow(current.row());
+
+    QString msg;
+    msg.sprintf("Deleted Row #%d.", current.row()+1);
+    statusBar()->showMessage(msg);
+}
+
+void MainWindow::on_pushButton_revertData_clicked()
+{
+    data->revertAll();
+    sample->submitAll();
+
+    statusBar()->showMessage("revert add/delete.");
 }

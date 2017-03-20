@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QtSql>
+#include <QSqlQueryModel>
 #include <QVector>
 #include <QSqlRelationalTableModel>
 #include <QMessageBox>
@@ -26,18 +27,26 @@ public:
 
     QStringList GetTableColEntries(QString tableName, int col);
     int GetTableColNumber(QString tableName);
+
     void ShowTable(QString tableName);
 
 private slots:
 
-    void on_pushButton_EditEntry_clicked();
-    void updateCombox(QString tableName);
+    void on_comboBox_chemical_currentTextChanged(const QString &arg1);
+    void on_pushButton_editChemical_clicked();
 
-    void on_pushButton_SelectSample_clicked();
+    void updateChemicalCombox(QString tableName);
 
-    void on_comboBox_1_currentTextChanged(const QString &arg1);
-
+    void on_pushButton_selectSample_clicked();
     void on_pushButton_sumbitSample_clicked();
+    void on_pushButton_addSampleEntry_clicked();
+    void on_pushButton_deleteSampleEntry_clicked();
+    void on_pushButton_revertSample_clicked();
+
+    void on_pushButton_submitData_clicked();
+    void on_pushButton_addDataEntry_clicked();
+    void on_pushButton_deleteDataEntry_clicked();
+    void on_pushButton_revertData_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -45,6 +54,7 @@ private:
     QSqlTableModel *data;
 
     QSqlDatabase db;
+
     TableEditor *editor;
 };
 
