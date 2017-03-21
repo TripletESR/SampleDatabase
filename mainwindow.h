@@ -54,7 +54,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *sample;
-    QSqlTableModel *data;
+    QSqlRelationalTableModel *data;
 
     QSqlDatabase db;
 

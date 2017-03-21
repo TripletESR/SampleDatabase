@@ -38,19 +38,25 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
     //====================== set up the data-table
-    data = new QSqlTableModel(this);
-    data->setTable(tableList[0]);
+    data = new QSqlRelationalTableModel(this);
+    data->setTable("Data");
     data->setEditStrategy(QSqlTableModel::OnManualSubmit);
     data->select();
     ui->dataView->setModel(data);
     ui->dataView->resizeColumnsToContents();
 
+    int sampleIdx = data->fieldIndex("Sample");
+    data->setRelation(sampleIdx, QSqlRelation("Sample", "NAME", "NAME"));
+    ui->dataView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
     ui->dataView->setItemDelegateForColumn(2, new DateFormatDelegate());
 
     //====================== Other things
     editor = NULL;
 
-    ShowTable(tableList[4]);
+    ShowTable("Chemical");
+    ShowTable("Sample");
+    ShowTable("Data");
+
     updateChemicalCombox(tableList[1]);
 
     //qDebug() << sample->fieldIndex("Name");
@@ -124,6 +130,7 @@ void MainWindow::updateChemicalCombox(QString tableName)
 {
     QStringList hostList = GetTableColEntries(tableName, 1);
     ui->comboBox_chemical->clear();
+    ui->comboBox_chemical->addItem("All");
     ui->comboBox_chemical->addItems(hostList);
 }
 
@@ -137,6 +144,13 @@ void MainWindow::on_pushButton_editChemical_clicked()
 
 void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
 {
+    if(arg1 == "All") {
+        sample->setFilter("");
+        data->setFilter("");
+        ui->lineEdit_ChemFormula->setText("");
+        return;
+    }
+
     QStringList hostList0 = GetTableColEntries("Chemical", 1);
     QStringList hostList1 = GetTableColEntries("Chemical", 2);
 
