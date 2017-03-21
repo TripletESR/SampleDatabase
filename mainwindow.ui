@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
+    <width>1104</width>
     <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Sample Database</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,6,6" columnstretch="1,1" columnminimumwidth="250,0">
@@ -163,7 +163,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>839</width>
+     <width>1104</width>
      <height>21</height>
     </rect>
    </property>

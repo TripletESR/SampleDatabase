@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     data->setRelation(sampleIdx, QSqlRelation("Sample", "NAME", "NAME"));
     ui->dataView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
     ui->dataView->setItemDelegateForColumn(2, new DateFormatDelegate());
-    ui->dataView->setItemDelegateForColumn(3, new OpenFileDelegate());
+    ui->dataView->setItemDelegateForColumn(5, new OpenFileDelegate());
 
     //====================== Other things
     editor = NULL;
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ShowTable("Sample");
     ShowTable("Data");
 
-    updateChemicalCombox(tableList[1]);
+    updateChemicalCombox("Chemical");
 
     //qDebug() << sample->fieldIndex("Name");
 

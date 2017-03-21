@@ -30,5 +30,5 @@ void OpenFileDelegate::updateEditorGeometry(QWidget *parent, const QStyleOptionV
     //qDebug() << parent->geometry();
     //qDebug() << parent->parentWidget()->parentWidget()->parentWidget()->parentWidget()->parentWidget()->pos();
     QRect rect = parent->parentWidget()->parentWidget()->parentWidget()->parentWidget()->parentWidget()->geometry();
-    parent->setGeometry(rect.x()+rect.width()/4., rect.y()+rect.height()/4., rect.width(), rect.height()*3./4.);
+    parent->setGeometry(rect.x()+rect.width()/4., rect.y()+rect.height()/4., rect.width()/2, rect.height()*3./4.);
 }
