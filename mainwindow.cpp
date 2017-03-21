@@ -164,19 +164,25 @@ void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
     if(arg1 == "All") {
         sample->setFilter("");
         data->setFilter("");
-        ui->lineEdit_ChemFormula->setText("");
+        ui->lineEdit_ChemFormula->setText("-----");
+        ui->label_Picture->clear();
         return;
     }
 
-    QStringList hostList0 = GetTableColEntries("Chemical", 1);
-    QStringList hostList1 = GetTableColEntries("Chemical", 2);
+    QStringList nameList = GetTableColEntries("Chemical", 1);
+    QStringList formulaList = GetTableColEntries("Chemical", 2);
+    QStringList picPathList = GetTableColEntries("Chemical", 3);
 
-    for(int i = 0; i < hostList0.size(); i ++ ){
-        if( hostList0[i] == arg1) {
-            ui->lineEdit_ChemFormula->setText(hostList1[i]);
+    for(int i = 0; i < nameList.size(); i ++ ){
+        if( nameList[i] == arg1) {
+            ui->lineEdit_ChemFormula->setText(formulaList[i]);
+            QImage image(picPathList[i]);
+            ui->label_Picture->setPixmap(QPixmap::fromImage(image));
             break;
         }
     }
+
+
 
     //TODO select sample
     QString filter = "Chemical='" + arg1 + "'";

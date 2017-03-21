@@ -5,10 +5,10 @@
 #include <QDebug>
 #include <QtSql>
 #include <QSqlQueryModel>
-#include <QVector>
 #include <QSqlRelationalTableModel>
+#include <QVector>
 #include <QMessageBox>
-#include <QDataWidgetMapper>
+#include <QImage>
 #include "constant.h"
 #include "tableeditor.h"
 #include "dateformatdelegate.h"

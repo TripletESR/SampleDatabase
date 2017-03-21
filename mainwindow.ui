@@ -14,23 +14,14 @@
    <string>Sample Database</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,6,6" columnstretch="1,1,0" columnminimumwidth="250,0,0">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="2,2,6,6" columnstretch="1,1,0" columnminimumwidth="250,0,0">
     <item row="0" column="0" rowspan="2">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
        <string>Chemical</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,1,0" columnminimumwidth="100,100,50">
+      <layout class="QGridLayout" name="gridLayout_4" rowstretch="3,0" columnstretch="1,1,0">
        <item row="0" column="0">
-        <widget class="QComboBox" name="comboBox_chemical">
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
         <widget class="QLineEdit" name="lineEdit_ChemFormula">
          <property name="font">
           <font>
@@ -39,10 +30,29 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
+       <item row="1" column="0">
+        <widget class="QComboBox" name="comboBox_chemical">
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
         <widget class="QPushButton" name="pushButton_editChemical">
          <property name="text">
           <string>Edit List</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" rowspan="2">
+        <widget class="QLabel" name="label_Picture">
+         <property name="text">
+          <string>Picture</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -149,19 +159,6 @@
        </item>
       </layout>
      </widget>
-    </item>
-    <item row="1" column="1">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
     </item>
     <item row="1" column="2">
      <widget class="QPushButton" name="pushButton_editSolvent">
