@@ -196,8 +196,15 @@ void MainWindow::on_pushButton_sumbitSample_clicked()
 
 void MainWindow::on_pushButton_addSampleEntry_clicked()
 {
-    sample->insertRow(sample->rowCount());
+    int row = sample->rowCount();
+    sample->insertRow(row);
     ui->sampleView->scrollToBottom();
+
+    //set default data
+    QString sampleName = "Sample-" + QString::number(row+1);
+    sample->setData(sample->index(row,1), sampleName);
+    QDate date;
+    sample->setData(sample->index(row, 6), date.currentDate().toString("yyyy-MM-dd"));
 }
 
 void MainWindow::on_pushButton_deleteSampleEntry_clicked()
@@ -234,8 +241,13 @@ void MainWindow::on_pushButton_submitData_clicked()
 
 void MainWindow::on_pushButton_addDataEntry_clicked()
 {
-    data->insertRow(data->rowCount());
+    int row = data->rowCount();
+    data->insertRow(row);
     ui->dataView->scrollToBottom();
+
+    //set default data
+    QDate date;
+    data->setData(sample->index(row, 2), date.currentDate().toString("yyyy-MM-dd"));
 }
 
 void MainWindow::on_pushButton_deleteDataEntry_clicked()
