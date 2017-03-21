@@ -33,11 +33,12 @@ public:
     void ShowTable(QString tableName);
 
 private slots:
+    void SetupSampleTableView();
+    void updateChemicalCombox(QString tableName);
 
     void on_comboBox_chemical_currentTextChanged(const QString &arg1);
     void on_pushButton_editChemical_clicked();
 
-    void updateChemicalCombox(QString tableName);
 
     void on_pushButton_selectSample_clicked();
     void on_pushButton_sumbitSample_clicked();
@@ -52,6 +53,10 @@ private slots:
 
     void on_pushButton_open_clicked();
 
+    void on_pushButton_editHost_clicked();
+
+    void on_pushButton_editSolvent_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *sample;
@@ -59,7 +64,9 @@ private:
 
     QSqlDatabase db;
 
-    TableEditor *editor;
+    TableEditor *editorChemical;
+    TableEditor *editorHost;
+    TableEditor *editorSolvent;
 };
 
 #endif // MAINWINDOW_H

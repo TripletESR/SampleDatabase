@@ -16,26 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //===================== set up the sample-table
     sample = new QSqlRelationalTableModel(ui->sampleView);
-    sample->setTable("Sample");
-    sample->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    sample->select();
+    SetupSampleTableView();
 
-    //set relation, so that can choose directly on the table
-    int chemicalIdx = sample->fieldIndex("Chemical");
-    sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "NAME", "NAME"));
-    int hostIdx = sample->fieldIndex("Host");
-    sample->setRelation(hostIdx, QSqlRelation("Host", "NAME", "NAME"));
-    int solventIdx = sample->fieldIndex("Solvent");
-    sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
-
-    ui->sampleView->setModel(sample);
-    ui->sampleView->resizeColumnsToContents();
-    ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
-    ui->sampleView->setItemDelegateForColumn(6, new DateFormatDelegate() );
-    //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
-    ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
-
-    //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
     //====================== set up the data-table
     data = new QSqlRelationalTableModel(this);
@@ -50,9 +32,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dataView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
     ui->dataView->setItemDelegateForColumn(2, new DateFormatDelegate());
     ui->dataView->setItemDelegateForColumn(5, new OpenFileDelegate());
+    ui->dataView->horizontalHeader()->model()->setHeaderData(1, Qt::Horizontal, "Sample");
 
     //====================== Other things
-    editor = NULL;
+    editorChemical = NULL;
+    editorHost = NULL;
+    editorSolvent = NULL;
 
     ShowTable("Chemical");
     ShowTable("Sample");
@@ -127,6 +112,36 @@ void MainWindow::ShowTable(QString tableName)
 
 }
 
+void MainWindow::SetupSampleTableView()
+{
+    sample->clear();
+    sample->setTable("Sample");
+    sample->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    sample->select();
+
+    //set relation, so that can choose directly on the table
+    int chemicalIdx = sample->fieldIndex("Chemical");
+    sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "NAME", "NAME"));
+    int hostIdx = sample->fieldIndex("Host");
+    sample->setRelation(hostIdx, QSqlRelation("Host", "NAME", "NAME"));
+    int solventIdx = sample->fieldIndex("Solvent");
+    sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
+
+    ui->sampleView->setModel(sample);
+    ui->sampleView->resizeColumnsToContents();
+    ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
+    ui->sampleView->setItemDelegateForColumn(6, new DateFormatDelegate() );
+    //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
+    ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
+    //for some unknown reasons, the column header names are needed to rename;
+    ui->sampleView->horizontalHeader()->model()->setHeaderData(2, Qt::Horizontal, "Chemical");
+    ui->sampleView->horizontalHeader()->model()->setHeaderData(3, Qt::Horizontal, "Host");
+    ui->sampleView->horizontalHeader()->model()->setHeaderData(4, Qt::Horizontal, "Solvent");
+
+    //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
+}
+
+
 void MainWindow::updateChemicalCombox(QString tableName)
 {
     QStringList hostList = GetTableColEntries(tableName, 1);
@@ -137,10 +152,11 @@ void MainWindow::updateChemicalCombox(QString tableName)
 
 void MainWindow::on_pushButton_editChemical_clicked()
 {
-    editor = new TableEditor("Chemical");
-    disconnect(editor);
-    connect(editor, SIGNAL(closed(QString)), this, SLOT(updateChemicalCombox(QString)));
-    editor->show();
+    editorChemical = new TableEditor("Chemical");
+    disconnect(editorChemical);
+    connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(updateChemicalCombox(QString)));
+    connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
+    editorChemical->show();
 }
 
 void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
@@ -275,4 +291,20 @@ void MainWindow::on_pushButton_open_clicked()
     //QProcess process;
     //QString file = QDir::homepath + "file.exe";
     //process.start(file);
+}
+
+void MainWindow::on_pushButton_editHost_clicked()
+{
+    editorHost = new TableEditor("Host");
+    disconnect(editorHost);
+    connect(editorHost, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
+    editorHost->show();
+}
+
+void MainWindow::on_pushButton_editSolvent_clicked()
+{
+    editorSolvent = new TableEditor("Solvent");
+    disconnect(editorSolvent);
+    connect(editorSolvent, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
+    editorSolvent->show();
 }
