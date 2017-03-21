@@ -58,6 +58,9 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
 {
 
     setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+    //QRect rect = geometry();
+    //setGeometry(rect.x(), rect.y(), 500, 200);
+
     this->tableName = tableName;
     model = new QSqlTableModel(this);
     model->setTable(tableName);
@@ -72,6 +75,7 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     view = new QTableView;
     view->setModel(model);
     view->resizeColumnsToContents();
+    view->setItemDelegateForColumn(3, new OpenFileDelegate(1) );
 
     submitButton = new QPushButton(tr("Submit"));
     //submitButton->setDefault(true);

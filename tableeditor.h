@@ -53,6 +53,7 @@
 
 #include <QDialog>
 #include <QTableView>
+#include "openfiledelegate.h"
 
 QT_BEGIN_NAMESPACE
 class QDialogButtonBox;

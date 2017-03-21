@@ -1,8 +1,8 @@
 #include "openfiledelegate.h"
 
-OpenFileDelegate::OpenFileDelegate(QObject *parent) : QStyledItemDelegate(parent)
+OpenFileDelegate::OpenFileDelegate(int falg, QObject *parent) : QStyledItemDelegate(parent)
 {
-
+    this->flag = falg;
 }
 
 QWidget *OpenFileDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -29,6 +29,11 @@ void OpenFileDelegate::updateEditorGeometry(QWidget *parent, const QStyleOptionV
 {
     //qDebug() << parent->geometry();
     //qDebug() << parent->parentWidget()->parentWidget()->parentWidget()->parentWidget()->parentWidget()->pos();
-    QRect rect = parent->parentWidget()->parentWidget()->parentWidget()->parentWidget()->parentWidget()->geometry();
-    parent->setGeometry(rect.x()+rect.width()/4., rect.y()+rect.height()/4., rect.width()/2, rect.height()*3./4.);
+    if( flag == 0){
+        QRect rect = parent->parentWidget()->parentWidget()->parentWidget()->parentWidget()->parentWidget()->geometry();
+        parent->setGeometry(rect.x()+rect.width()/4., rect.y()+rect.height()/4., rect.width()/2, rect.height()*3./4.);
+    }else{
+        parent->setGeometry(500, 500, 800, 500);
+    }
+
 }
