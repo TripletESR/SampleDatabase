@@ -121,6 +121,7 @@ void TableEditor::submit()
 void TableEditor::addEntry()
 {
     model->insertRow(model->rowCount());
+    view->scrollToBottom();
 }
 
 void TableEditor::deleteEntry()

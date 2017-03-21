@@ -34,6 +34,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dataView->setItemDelegateForColumn(5, new OpenFileDelegate());
     ui->dataView->horizontalHeader()->model()->setHeaderData(1, Qt::Horizontal, "Sample");
 
+    ui->dataView->setColumnWidth(1, 100);
+    ui->dataView->setColumnWidth(2, 100);
+
     //====================== Other things
     editorChemical = NULL;
     editorHost = NULL;
@@ -138,6 +141,12 @@ void MainWindow::SetupSampleTableView()
     ui->sampleView->horizontalHeader()->model()->setHeaderData(3, Qt::Horizontal, "Host");
     ui->sampleView->horizontalHeader()->model()->setHeaderData(4, Qt::Horizontal, "Solvent");
 
+    ui->sampleView->setColumnWidth(1, 100);
+    ui->sampleView->setColumnWidth(2, 100);
+    ui->sampleView->setColumnWidth(3, 100);
+    ui->sampleView->setColumnWidth(4, 100);
+    ui->sampleView->setColumnWidth(6, 100);
+
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 }
 
@@ -177,6 +186,7 @@ void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
         if( nameList[i] == arg1) {
             ui->lineEdit_ChemFormula->setText(formulaList[i]);
             QImage image(picPathList[i]);
+            //QImage scaledImage = image.scaledToHeight(100);
             ui->label_Picture->setPixmap(QPixmap::fromImage(image));
             break;
         }
