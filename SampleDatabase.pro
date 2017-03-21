@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     tableeditor.cpp \
-    dateformatdelegate.cpp
+    dateformatdelegate.cpp \
+    openfiledelegate.cpp
 
 HEADERS  += mainwindow.h \
     constant.h \
     tableeditor.h \
-    dateformatdelegate.h
+    dateformatdelegate.h \
+    openfiledelegate.h
 
 FORMS    += mainwindow.ui

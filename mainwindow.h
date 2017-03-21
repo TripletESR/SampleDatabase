@@ -12,6 +12,7 @@
 #include "constant.h"
 #include "tableeditor.h"
 #include "dateformatdelegate.h"
+#include "openfiledelegate.h"
 
 
 namespace Ui {
