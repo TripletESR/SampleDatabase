@@ -57,9 +57,8 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     : QWidget(parent)
 {
 
-    setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
-    //QRect rect = geometry();
-    //setGeometry(rect.x(), rect.y(), 500, 200);
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+    this->resize(800, 200);
 
     this->tableName = tableName;
     model = new QSqlTableModel(this);
