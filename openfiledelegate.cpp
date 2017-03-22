@@ -9,6 +9,7 @@ QWidget *OpenFileDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 {
     QFileDialog * editor = new QFileDialog(parent);
 
+    if(flag == 0) editor->setDirectory(DATA_PATH);
     editor->setReadOnly(true);
     QStringList filters;
     filters << "Data File (*txt *dat *csv *.*)";
@@ -21,8 +22,35 @@ QWidget *OpenFileDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 void OpenFileDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     QFileDialog *fileDialog = qobject_cast<QFileDialog *> (editor);
-    QStringList fileNameList = fileDialog->selectedFiles();
-    model->setData(index, fileNameList[0]);
+    QStringList filePathList = fileDialog->selectedFiles();
+    QString filePath = filePathList[0];
+
+    if( flag == 0){
+        int length = filePath.length();
+        int lengthDATA = DATA_PATH.length();
+        //qDebug() << length << "," << filePath ;
+        //qDebug() << lengthDATA << "," << DATA_PATH ;
+        //qDebug() << filePath.right(length-lengthDATA);
+
+        if( filePath.left(lengthDATA) == DATA_PATH ){
+            QString fileName = filePath.right(length-lengthDATA);
+            model->setData(index, fileName);
+            return;
+        }else{
+            model->setData(index, filePath);
+            return;
+        }
+
+    }
+
+    if( flag == 1){
+        QStringList fileName = filePath.split("/");
+        int length = fileName.size();
+        //qDebug() << filePath;
+        //qDebug() << fileName;
+        model->setData(index, fileName[length-1]);
+        return;
+    }
 }
 
 void OpenFileDelegate::updateEditorGeometry(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

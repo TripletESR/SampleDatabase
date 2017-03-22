@@ -4,6 +4,7 @@
 #include <QStyledItemDelegate>
 #include <QFileDialog>
 #include <QDebug>
+#include "constant.h"
 
 class OpenFileDelegate : public QStyledItemDelegate
 {

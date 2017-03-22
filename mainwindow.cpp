@@ -42,11 +42,13 @@ MainWindow::MainWindow(QWidget *parent) :
     editorHost = NULL;
     editorSolvent = NULL;
 
-    ShowTable("Chemical");
-    ShowTable("Sample");
-    ShowTable("Data");
+    //ShowTable("Chemical");
+    //ShowTable("Sample");
+    //ShowTable("Data");
 
     updateChemicalCombox("Chemical");
+
+    ui->pushButton_open->setEnabled(false);
 
     //qDebug() << sample->fieldIndex("Name");
 
@@ -180,12 +182,14 @@ void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
 
     QStringList nameList = GetTableColEntries("Chemical", 1);
     QStringList formulaList = GetTableColEntries("Chemical", 2);
-    QStringList picPathList = GetTableColEntries("Chemical", 3);
+    QStringList picNameList = GetTableColEntries("Chemical", 3);
+
 
     for(int i = 0; i < nameList.size(); i ++ ){
         if( nameList[i] == arg1) {
             ui->lineEdit_ChemFormula->setText(formulaList[i]);
-            QImage image(picPathList[i]);
+            QString picPath = ChemicalPicture_PATH + picNameList[i];
+            QImage image(picPath);
             //QImage scaledImage = image.scaledToHeight(100);
             ui->label_Picture->setPixmap(QPixmap::fromImage(image));
             break;
