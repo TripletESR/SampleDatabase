@@ -29,18 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //===================== set up the sample-table
     sample = new QSqlRelationalTableModel(ui->sampleView);
     SetupSampleTableView();
-    //ui->sampleView->scrollToBottom();
 
     //====================== Other things
     editorChemical = NULL;
-    editorHost = NULL;
     editorSolvent = NULL;
     editorLaser = NULL;
 
     //ShowTable("Chemical");
     //ShowTable("Sample");
     //ShowTable("Data");
-    //qDebug() << sample->fieldIndex("Name");
 
 }
 
@@ -153,14 +150,6 @@ void MainWindow::on_pushButton_editChemical_clicked()
     disconnect(editorChemical);
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorChemical->show();
-}
-
-void MainWindow::on_pushButton_editHost_clicked()
-{
-    editorHost = new TableEditor("Host");
-    disconnect(editorHost);
-    connect(editorHost, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
-    editorHost->show();
 }
 
 void MainWindow::on_pushButton_editSolvent_clicked()

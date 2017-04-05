@@ -36,7 +36,6 @@ private slots:
     void SetupSampleTableView();
 
     void on_pushButton_editChemical_clicked();
-    void on_pushButton_editHost_clicked();
     void on_pushButton_editSolvent_clicked();
 
     void on_pushButton_sumbitSample_clicked();
@@ -54,7 +53,6 @@ private:
     QSqlDatabase db;
 
     TableEditor *editorChemical;
-    TableEditor *editorHost;
     TableEditor *editorSolvent;
     TableEditor *editorLaser;
 };

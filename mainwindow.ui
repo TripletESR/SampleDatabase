@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton_editSolvent">
+     <widget class="QPushButton" name="pushButton_editLaser">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -29,7 +29,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Edit Solvent</string>
+       <string>Edit Laser</string>
       </property>
      </widget>
     </item>
@@ -52,7 +52,7 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QPushButton" name="pushButton_editHost">
+     <widget class="QPushButton" name="pushButton_editSolvent">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -65,29 +65,11 @@
        </font>
       </property>
       <property name="text">
-       <string>Edit Host</string>
+       <string>Edit Solvent</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="pushButton_editLaser">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Edit Laser</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="4">
+    <item row="1" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Sample</string>
