@@ -15,4 +15,5 @@ const QString APP_PATH = DESKTOP_PATH + "SampleDatabase/";
 const QString ChemicalPicture_PATH = DATA_PATH + "Chemical_Pic/";
 const QString DB_PATH = APP_PATH + "example.db";
 
+
 #endif // CONSTANT_H
