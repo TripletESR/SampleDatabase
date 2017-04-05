@@ -34,33 +34,20 @@ public:
 
 private slots:
     void SetupSampleTableView();
-    void updateChemicalCombox(QString tableName);
 
-    void on_comboBox_chemical_currentTextChanged(const QString &arg1);
     void on_pushButton_editChemical_clicked();
+    void on_pushButton_editHost_clicked();
+    void on_pushButton_editSolvent_clicked();
 
-
-    void on_pushButton_selectSample_clicked();
     void on_pushButton_sumbitSample_clicked();
     void on_pushButton_addSampleEntry_clicked();
     void on_pushButton_deleteSampleEntry_clicked();
     void on_pushButton_revertSample_clicked();
 
-    void on_pushButton_submitData_clicked();
-    void on_pushButton_addDataEntry_clicked();
-    void on_pushButton_deleteDataEntry_clicked();
-    void on_pushButton_revertData_clicked();
-
-    void on_pushButton_open_clicked();
-
-    void on_pushButton_editHost_clicked();
-
-    void on_pushButton_editSolvent_clicked();
 
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *sample;
-    QSqlRelationalTableModel *data;
 
     QSqlDatabase db;
 

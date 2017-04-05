@@ -8,34 +8,27 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     db = QSqlDatabase::addDatabase("QSQLITE");
+    if( QFile::exists(DB_PATH) ){
+        qDebug() << "database exist : " << DB_PATH ;
+    }else{
+        qDebug() << "No database : " << DB_PATH ;
+        return;
+    }
     db.setDatabaseName(DB_PATH);
-    qDebug() << db.databaseName();
-    qDebug() << "database open? " << db.open();
+    db.open();
+    if( !db.isOpen()){
+        qDebug() << "Database open Error : " + DB_PATH ;
+        return;
+    }else{
+        statusBar()->showMessage("Database openned. ");
+    }
+
     QStringList tableList = db.tables();
     qDebug() << tableList;
 
     //===================== set up the sample-table
     sample = new QSqlRelationalTableModel(ui->sampleView);
     SetupSampleTableView();
-
-
-    //====================== set up the data-table
-    data = new QSqlRelationalTableModel(this);
-    data->setTable("Data");
-    data->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    data->select();
-    ui->dataView->setModel(data);
-    ui->dataView->resizeColumnsToContents();
-
-    int sampleIdx = data->fieldIndex("Sample");
-    data->setRelation(sampleIdx, QSqlRelation("Sample", "NAME", "NAME"));
-    ui->dataView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
-    ui->dataView->setItemDelegateForColumn(2, new DateFormatDelegate());
-    ui->dataView->setItemDelegateForColumn(5, new OpenFileDelegate());
-    ui->dataView->horizontalHeader()->model()->setHeaderData(1, Qt::Horizontal, "Sample");
-
-    ui->dataView->setColumnWidth(1, 100);
-    ui->dataView->setColumnWidth(2, 100);
 
     //====================== Other things
     editorChemical = NULL;
@@ -45,11 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //ShowTable("Chemical");
     //ShowTable("Sample");
     //ShowTable("Data");
-
-    updateChemicalCombox("Chemical");
-
-    ui->pushButton_open->setEnabled(false);
-
     //qDebug() << sample->fieldIndex("Name");
 
 }
@@ -150,15 +138,7 @@ void MainWindow::SetupSampleTableView()
     ui->sampleView->setColumnWidth(6, 100);
 
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
-}
 
-
-void MainWindow::updateChemicalCombox(QString tableName)
-{
-    QStringList hostList = GetTableColEntries(tableName, 1);
-    ui->comboBox_chemical->clear();
-    ui->comboBox_chemical->addItem("All");
-    ui->comboBox_chemical->addItems(hostList);
 }
 
 void MainWindow::on_pushButton_editChemical_clicked()
@@ -168,53 +148,6 @@ void MainWindow::on_pushButton_editChemical_clicked()
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(updateChemicalCombox(QString)));
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorChemical->show();
-}
-
-void MainWindow::on_comboBox_chemical_currentTextChanged(const QString &arg1)
-{
-    if(arg1 == "All") {
-        sample->setFilter("");
-        data->setFilter("");
-        ui->lineEdit_ChemFormula->setText("-----");
-        ui->label_Picture->clear();
-        return;
-    }
-
-    QStringList nameList = GetTableColEntries("Chemical", 1);
-    QStringList formulaList = GetTableColEntries("Chemical", 2);
-    QStringList picNameList = GetTableColEntries("Chemical", 3);
-
-
-    for(int i = 0; i < nameList.size(); i ++ ){
-        if( nameList[i] == arg1) {
-            ui->lineEdit_ChemFormula->setText(formulaList[i]);
-            QString picPath = ChemicalPicture_PATH + picNameList[i];
-            QImage image(picPath);
-            //QImage scaledImage = image.scaledToHeight(100);
-            ui->label_Picture->setPixmap(QPixmap::fromImage(image));
-            break;
-        }
-    }
-
-
-
-    //TODO select sample
-    QString filter = "Chemical='" + arg1 + "'";
-    qDebug() << filter  ;
-    sample->setFilter(filter);
-
-}
-
-void MainWindow::on_pushButton_selectSample_clicked()
-{
-    //TODO select data
-    QModelIndex current = ui->sampleView->selectionModel()->currentIndex(); // the "current" item
-    QString sampleName = sample->index(current.row(), 1).data().toString();
-
-    QString filter = "Sample='" + sampleName + "'";
-    qDebug() << filter;
-    data->setFilter(filter);
-
 }
 
 void MainWindow::on_pushButton_sumbitSample_clicked()
@@ -260,57 +193,6 @@ void MainWindow::on_pushButton_revertSample_clicked()
     sample->submitAll();
 
     statusBar()->showMessage("revert add/delete.");
-}
-
-void MainWindow::on_pushButton_submitData_clicked()
-{
-    //sample->database().transaction();
-    if (data->submitAll()){
-        statusBar()->showMessage("Data Database wriiten.");
-    } else {
-        data->database().rollback();
-        QMessageBox::warning(this, tr("Cached Table"),
-                             tr("The database reported an error: %1")
-                             .arg(data->lastError().text()));
-    }
-}
-
-
-void MainWindow::on_pushButton_addDataEntry_clicked()
-{
-    int row = data->rowCount();
-    data->insertRow(row);
-    ui->dataView->scrollToBottom();
-
-    //set default data
-    QDate date;
-    data->setData(sample->index(row, 2), date.currentDate().toString("yyyy-MM-dd"));
-}
-
-void MainWindow::on_pushButton_deleteDataEntry_clicked()
-{
-    QModelIndex current = ui->dataView->selectionModel()->currentIndex();
-    data->removeRow(current.row());
-
-    QString msg;
-    msg.sprintf("Deleted Row #%d.", current.row()+1);
-    statusBar()->showMessage(msg);
-}
-
-void MainWindow::on_pushButton_revertData_clicked()
-{
-    data->revertAll();
-    sample->submitAll();
-
-    statusBar()->showMessage("revert add/delete.");
-}
-
-void MainWindow::on_pushButton_open_clicked()
-{
-    // open the analysis program
-    //QProcess process;
-    //QString file = QDir::homepath + "file.exe";
-    //process.start(file);
 }
 
 void MainWindow::on_pushButton_editHost_clicked()
