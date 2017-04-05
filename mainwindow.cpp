@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
         qDebug() << "Database open Error : " + DB_PATH ;
         return;
     }else{
-        statusBar()->showMessage("Database openned. ");
+        statusBar()->showMessage("Database openned. | " + DB_PATH);
     }
 
     QStringList tableList = db.tables();
@@ -29,11 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     //===================== set up the sample-table
     sample = new QSqlRelationalTableModel(ui->sampleView);
     SetupSampleTableView();
+    //ui->sampleView->scrollToBottom();
 
     //====================== Other things
     editorChemical = NULL;
     editorHost = NULL;
     editorSolvent = NULL;
+    editorLaser = NULL;
 
     //ShowTable("Chemical");
     //ShowTable("Sample");
@@ -119,23 +121,27 @@ void MainWindow::SetupSampleTableView()
     sample->setRelation(hostIdx, QSqlRelation("Host", "NAME", "NAME"));
     int solventIdx = sample->fieldIndex("Solvent");
     sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
+    int dateIdx = sample->fieldIndex("Date");
+    int pathIdx = sample->fieldIndex("SpectrumPath");
 
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
     ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
-    ui->sampleView->setItemDelegateForColumn(6, new DateFormatDelegate() );
-    //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
+    ui->sampleView->setItemDelegateForColumn(dateIdx, new DateFormatDelegate() );
+    ui->sampleView->setItemDelegateForColumn(pathIdx, new OpenFileDelegate() );
     ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
-    //for some unknown reasons, the column header names are needed to rename;
-    ui->sampleView->horizontalHeader()->model()->setHeaderData(2, Qt::Horizontal, "Chemical");
-    ui->sampleView->horizontalHeader()->model()->setHeaderData(3, Qt::Horizontal, "Host");
-    ui->sampleView->horizontalHeader()->model()->setHeaderData(4, Qt::Horizontal, "Solvent");
+    //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
 
-    ui->sampleView->setColumnWidth(1, 100);
-    ui->sampleView->setColumnWidth(2, 100);
-    ui->sampleView->setColumnWidth(3, 100);
-    ui->sampleView->setColumnWidth(4, 100);
-    ui->sampleView->setColumnWidth(6, 100);
+    //for some unknown reasons, the column header names are needed to rename;
+    sample->setHeaderData(chemicalIdx, Qt::Horizontal, "Chemical");
+    sample->setHeaderData(hostIdx, Qt::Horizontal, "Host");
+    sample->setHeaderData(solventIdx, Qt::Horizontal, "Solvent");
+
+    ui->sampleView->setColumnWidth(sample->fieldIndex("ID"), 30);
+    ui->sampleView->setColumnWidth(chemicalIdx, 100);
+    ui->sampleView->setColumnWidth(hostIdx, 100);
+    ui->sampleView->setColumnWidth(solventIdx, 100);
+    ui->sampleView->setColumnWidth(dateIdx, 100);
 
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
@@ -145,10 +151,32 @@ void MainWindow::on_pushButton_editChemical_clicked()
 {
     editorChemical = new TableEditor("Chemical");
     disconnect(editorChemical);
-    connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(updateChemicalCombox(QString)));
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorChemical->show();
 }
+
+void MainWindow::on_pushButton_editHost_clicked()
+{
+    editorHost = new TableEditor("Host");
+    disconnect(editorHost);
+    connect(editorHost, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
+    editorHost->show();
+}
+
+void MainWindow::on_pushButton_editSolvent_clicked()
+{
+    editorSolvent = new TableEditor("Solvent");
+    disconnect(editorSolvent);
+    connect(editorSolvent, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
+    editorSolvent->show();
+}
+
+void MainWindow::on_pushButton_editLaser_clicked()
+{
+    editorLaser = new TableEditor("Laser");
+    editorLaser->show();
+}
+
 
 void MainWindow::on_pushButton_sumbitSample_clicked()
 {
@@ -195,18 +223,3 @@ void MainWindow::on_pushButton_revertSample_clicked()
     statusBar()->showMessage("revert add/delete.");
 }
 
-void MainWindow::on_pushButton_editHost_clicked()
-{
-    editorHost = new TableEditor("Host");
-    disconnect(editorHost);
-    connect(editorHost, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
-    editorHost->show();
-}
-
-void MainWindow::on_pushButton_editSolvent_clicked()
-{
-    editorSolvent = new TableEditor("Solvent");
-    disconnect(editorSolvent);
-    connect(editorSolvent, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
-    editorSolvent->show();
-}

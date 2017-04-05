@@ -15,8 +15,37 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="2">
+     <widget class="QPushButton" name="pushButton_editSolvent">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Edit Solvent</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QPushButton" name="pushButton_editChemical">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Edit Chemical</string>
       </property>
@@ -24,19 +53,41 @@
     </item>
     <item row="0" column="1">
      <widget class="QPushButton" name="pushButton_editHost">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Edit Host</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton_editSolvent">
+    <item row="0" column="3">
+     <widget class="QPushButton" name="pushButton_editLaser">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>Edit Solvent</string>
+       <string>Edit Laser</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="3">
+    <item row="1" column="0" colspan="4">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Sample</string>
@@ -45,22 +96,19 @@
        <item row="0" column="0" rowspan="5">
         <widget class="QTableView" name="sampleView"/>
        </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="pushButton_addSampleEntry">
-         <property name="text">
-          <string>Add Entry</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="pushButton_deleteSampleEntry">
-         <property name="text">
-          <string>Delete Entry</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="1">
         <widget class="QPushButton" name="pushButton_revertSample">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Revert</string>
          </property>
@@ -68,8 +116,55 @@
        </item>
        <item row="4" column="1">
         <widget class="QPushButton" name="pushButton_sumbitSample">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Submit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_addSampleEntry">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Add Entry</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="pushButton_deleteSampleEntry">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Delete Entry</string>
          </property>
         </widget>
        </item>

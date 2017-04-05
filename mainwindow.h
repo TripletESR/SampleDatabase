@@ -45,6 +45,8 @@ private slots:
     void on_pushButton_revertSample_clicked();
 
 
+    void on_pushButton_editLaser_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *sample;
@@ -54,6 +56,7 @@ private:
     TableEditor *editorChemical;
     TableEditor *editorHost;
     TableEditor *editorSolvent;
+    TableEditor *editorLaser;
 };
 
 #endif // MAINWINDOW_H
