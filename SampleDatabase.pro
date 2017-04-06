@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     tableeditor.cpp \
     dateformatdelegate.cpp \
-    openfiledelegate.cpp
+    openfiledelegate.cpp \
+    constant.cpp
 
 HEADERS  += mainwindow.h \
     constant.h \

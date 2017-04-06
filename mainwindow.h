@@ -34,6 +34,7 @@ public:
 
 private slots:
     void SetupSampleTableView();
+    void loadConfigurationFile();
 
     void on_pushButton_editChemical_clicked();
     void on_pushButton_editSolvent_clicked();

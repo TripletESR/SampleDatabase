@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->resize(1500,500);
+    loadConfigurationFile();
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     if( QFile::exists(DB_PATH) ){
@@ -114,29 +116,27 @@ void MainWindow::SetupSampleTableView()
     //set relation, so that can choose directly on the table
     int chemicalIdx = sample->fieldIndex("Chemical");
     sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "NAME", "NAME"));
-    int hostIdx = sample->fieldIndex("Host");
-    sample->setRelation(hostIdx, QSqlRelation("Host", "NAME", "NAME"));
     int solventIdx = sample->fieldIndex("Solvent");
     sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
     int dateIdx = sample->fieldIndex("Date");
-    int pathIdx = sample->fieldIndex("SpectrumPath");
+    int picPathIdx = sample->fieldIndex("SpectrumPath");
+    int spectPathIdx = sample->fieldIndex("SpectrumPath");
 
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
     ui->sampleView->setItemDelegate(new QSqlRelationalDelegate(ui->sampleView));
     ui->sampleView->setItemDelegateForColumn(dateIdx, new DateFormatDelegate() );
-    ui->sampleView->setItemDelegateForColumn(pathIdx, new OpenFileDelegate() );
+    ui->sampleView->setItemDelegateForColumn(picPathIdx, new OpenFileDelegate() );
+    ui->sampleView->setItemDelegateForColumn(spectPathIdx, new OpenFileDelegate() );
     ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
     //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
 
     //for some unknown reasons, the column header names are needed to rename;
     sample->setHeaderData(chemicalIdx, Qt::Horizontal, "Chemical");
-    sample->setHeaderData(hostIdx, Qt::Horizontal, "Host");
     sample->setHeaderData(solventIdx, Qt::Horizontal, "Solvent");
 
     ui->sampleView->setColumnWidth(sample->fieldIndex("ID"), 30);
     ui->sampleView->setColumnWidth(chemicalIdx, 100);
-    ui->sampleView->setColumnWidth(hostIdx, 100);
     ui->sampleView->setColumnWidth(solventIdx, 100);
     ui->sampleView->setColumnWidth(dateIdx, 100);
 
@@ -144,9 +144,46 @@ void MainWindow::SetupSampleTableView()
 
 }
 
+void MainWindow::loadConfigurationFile()
+{
+    QString path = DESKTOP_PATH + "/AnalysisProgram.ini";
+        if( QFile::exists(path) ){
+            qDebug() << "Configuration file found :" << path;
+        }else{
+            qDebug() << "Configuration not found. | " << path;
+            return;
+        }
+
+        QFile configFile(path);
+        configFile.open(QIODevice::ReadOnly);
+        if( configFile.isOpen() ){
+            qDebug("Configuration file openned.");
+        }else{
+            qDebug("Configuration file fail to open.");
+            return;
+        }
+
+        QTextStream stream(&configFile);
+        QString line;
+        QStringList lineList;
+
+        while(stream.readLineInto(&line) ){
+            if( line.left(1) == "#" ) continue;
+            lineList = line.split(" ");
+            //qDebug() << lineList[0] << ", " << lineList[lineList.size()-1];
+            if( lineList[0] == "DATA_PATH") DATA_PATH = lineList[lineList.size()-1];
+            if( lineList[0] == "DB_PATH") DB_PATH = lineList[lineList.size()-1];
+            if( lineList[0] == "HALL_PATH") HALL_PATH = lineList[lineList.size()-1];
+            if( lineList[0] == "LOG_PATH") LOG_PATH = lineList[lineList.size()-1];
+            if( lineList[0] == "ChemicalPicture_PATH") CHEMICAL_PIC_PATH = lineList[lineList.size()-1];
+            if( lineList[0] == "SamplePicture_PATH") SAMPLE_PIC_PATH = lineList[lineList.size()-1];
+        }
+}
+
 void MainWindow::on_pushButton_editChemical_clicked()
 {
     editorChemical = new TableEditor("Chemical");
+    editorChemical->resize(500,200);
     disconnect(editorChemical);
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorChemical->show();
@@ -155,6 +192,7 @@ void MainWindow::on_pushButton_editChemical_clicked()
 void MainWindow::on_pushButton_editSolvent_clicked()
 {
     editorSolvent = new TableEditor("Solvent");
+    editorSolvent->resize(300,200);
     disconnect(editorSolvent);
     connect(editorSolvent, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorSolvent->show();
@@ -163,6 +201,7 @@ void MainWindow::on_pushButton_editSolvent_clicked()
 void MainWindow::on_pushButton_editLaser_clicked()
 {
     editorLaser = new TableEditor("Laser");
+    editorLaser->resize(300,200);
     editorLaser->show();
 }
 
