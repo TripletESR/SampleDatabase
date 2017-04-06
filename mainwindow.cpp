@@ -7,7 +7,22 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->resize(1500,500);
-    loadConfigurationFile();
+    int configFileFlag  = loadConfigurationFile();
+
+    if(configFileFlag == 1) {
+        QMessageBox msgBox;
+        msgBox.setText("The configuration file not exist.\n"
+                       "please check the ProgramConfiguration.ini exist on Desktop.");
+        msgBox.exec();
+    }else if(configFileFlag == 2){
+        QMessageBox msgBox;
+        msgBox.setText("The configuration file fail to open.");
+        msgBox.exec();
+    }else if(configFileFlag == 3){
+        QMessageBox msgBox;
+        msgBox.setText("Some items are missing in configuration file.");
+        msgBox.exec();
+    }
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     if( QFile::exists(DB_PATH) ){
@@ -144,40 +159,66 @@ void MainWindow::SetupSampleTableView()
 
 }
 
-void MainWindow::loadConfigurationFile()
+int MainWindow::loadConfigurationFile()
 {
-    QString path = DESKTOP_PATH + "/AnalysisProgram.ini";
-        if( QFile::exists(path) ){
-            qDebug() << "Configuration file found :" << path;
-        }else{
-            qDebug() << "Configuration not found. | " << path;
-            return;
-        }
+    QString path = DESKTOP_PATH + "/ProgramsConfiguration.ini";
+    if( QFile::exists(path) ){
+        qDebug() << "Configuration file found :" << path;
+    }else{
+        qDebug() << "Configuration not found. | " << path;
+        return 1;
+    }
 
-        QFile configFile(path);
-        configFile.open(QIODevice::ReadOnly);
-        if( configFile.isOpen() ){
-            qDebug("Configuration file openned.");
-        }else{
-            qDebug("Configuration file fail to open.");
-            return;
-        }
+    QFile configFile(path);
+    configFile.open(QIODevice::ReadOnly);
+    if( configFile.isOpen() ){
+        qDebug("Configuration file openned.");
+    }else{
+        qDebug("Configuration file fail to open.");
+        return 2;
+    }
 
-        QTextStream stream(&configFile);
-        QString line;
-        QStringList lineList;
+    QTextStream stream(&configFile);
+    QString line;
+    QStringList lineList;
 
-        while(stream.readLineInto(&line) ){
-            if( line.left(1) == "#" ) continue;
-            lineList = line.split(" ");
-            //qDebug() << lineList[0] << ", " << lineList[lineList.size()-1];
-            if( lineList[0] == "DATA_PATH") DATA_PATH = lineList[lineList.size()-1];
-            if( lineList[0] == "DB_PATH") DB_PATH = lineList[lineList.size()-1];
-            if( lineList[0] == "HALL_PATH") HALL_PATH = lineList[lineList.size()-1];
-            if( lineList[0] == "LOG_PATH") LOG_PATH = lineList[lineList.size()-1];
-            if( lineList[0] == "ChemicalPicture_PATH") CHEMICAL_PIC_PATH = lineList[lineList.size()-1];
-            if( lineList[0] == "SamplePicture_PATH") SAMPLE_PIC_PATH = lineList[lineList.size()-1];
+    int itemCount = 0;
+
+    while(stream.readLineInto(&line) ){
+        if( line.left(1) == "#" ) continue;
+        lineList = line.split(" ");
+        //qDebug() << lineList[0] << ", " << lineList[lineList.size()-1];
+        if( lineList[0] == "DATA_PATH") {
+            DATA_PATH = lineList[lineList.size()-1];
+            itemCount ++;
         }
+        if( lineList[0] == "DB_PATH") {
+            DB_PATH = lineList[lineList.size()-1];
+            itemCount ++;
+        }
+        if( lineList[0] == "HALL_PATH") {
+            HALL_PATH = lineList[lineList.size()-1];
+            itemCount ++;
+        }
+        if( lineList[0] == "LOG_PATH") {
+            LOG_PATH = lineList[lineList.size()-1];
+            itemCount ++;
+        }
+        if( lineList[0] == "ChemicalPicture_PATH") {
+            CHEMICAL_PIC_PATH = lineList[lineList.size()-1];
+            itemCount ++;
+        }
+        if( lineList[0] == "SamplePicture_PATH") {
+            SAMPLE_PIC_PATH = lineList[lineList.size()-1];
+            itemCount ++;
+        }
+    }
+
+    if( itemCount != 6){
+        return 3;
+    }
+
+    return 0;
 }
 
 void MainWindow::on_pushButton_editChemical_clicked()
