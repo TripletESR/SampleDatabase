@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SampleDatabase
 TEMPLATE = app
 
+RC_ICONS += icon.ico
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -26,3 +27,6 @@ HEADERS  += mainwindow.h \
     openfiledelegate.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    icon.ico
