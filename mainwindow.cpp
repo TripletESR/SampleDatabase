@@ -134,7 +134,7 @@ void MainWindow::SetupSampleTableView()
     int solventIdx = sample->fieldIndex("Solvent");
     sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
     int dateIdx = sample->fieldIndex("Date");
-    int picPathIdx = sample->fieldIndex("SpectrumPath");
+    int picPathIdx = sample->fieldIndex("PicPath");
     int spectPathIdx = sample->fieldIndex("SpectrumPath");
 
     ui->sampleView->setModel(sample);

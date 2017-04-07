@@ -27,12 +27,12 @@ void OpenFileDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
     if( flag == 0){
         int length = filePath.length();
-        int lengthDATA = DATA_PATH.length();
+        int lengthDATA = SAMPLE_PIC_PATH.length();
         //qDebug() << length << "," << filePath ;
         //qDebug() << lengthDATA << "," << DATA_PATH ;
         //qDebug() << filePath.right(length-lengthDATA);
 
-        if( filePath.left(lengthDATA) == DATA_PATH ){
+        if( filePath.left(lengthDATA) == SAMPLE_PIC_PATH ){
             QString fileName = filePath.right(length-lengthDATA);
             model->setData(index, fileName);
             return;
