@@ -75,7 +75,7 @@ TableEditor::TableEditor(const QString &tableName, QWidget *parent)
     view->setModel(model);
     view->resizeColumnsToContents();
     if( model->fieldIndex("PicPath") != -1 ) view->setItemDelegateForColumn(model->fieldIndex("PicPath"), new OpenFileDelegate(1) );
-    if( model->fieldIndex("PATH") != -1 ) view->setItemDelegateForColumn(model->fieldIndex("PATH"), new OpenFileDelegate(1) );
+    if( model->fieldIndex("PATH") != -1 ) view->setItemDelegateForColumn(model->fieldIndex("PATH"), new OpenFileDelegate(2) );
 
     submitButton = new QPushButton(tr("Submit"));
     //submitButton->setDefault(true);

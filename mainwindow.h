@@ -34,6 +34,7 @@ public:
 
 private slots:
     void SetupSampleTableView();
+    void SetupDataTableView();
     int loadConfigurationFile();
 
     void on_pushButton_editChemical_clicked();
@@ -47,9 +48,18 @@ private slots:
 
     void on_pushButton_editLaser_clicked();
 
+    void on_pushButton_addDataEntry_clicked();
+
+    void on_pushButton_deleteDataEntry_clicked();
+
+    void on_pushButton_revertData_clicked();
+
+    void on_pushButton_submitData_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlRelationalTableModel *sample;
+    QSqlRelationalTableModel *data;
 
     QSqlDatabase db;
 

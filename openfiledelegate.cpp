@@ -9,7 +9,8 @@ QWidget *OpenFileDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 {
     QFileDialog * editor = new QFileDialog(parent);
 
-    if(flag == 0) editor->setDirectory(DATA_PATH);
+    //if(flag == 0) editor->setDirectory(DATA_PATH);
+    editor->setDirectory(DATA_PATH);
     editor->setReadOnly(true);
     QStringList filters;
     filters << "Data File (*txt *dat *csv *.*)";
@@ -50,6 +51,24 @@ void OpenFileDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         //qDebug() << fileName;
         model->setData(index, fileName[length-1]);
         return;
+    }
+
+    if( flag == 2){
+        int length = filePath.length();
+        int lengthDATA = DATA_PATH.length();
+        //qDebug() << length << "," << filePath ;
+        //qDebug() << lengthDATA << "," << DATA_PATH ;
+        //qDebug() << filePath.right(length-lengthDATA);
+
+        if( filePath.left(lengthDATA) == DATA_PATH ){
+            QString fileName = filePath.right(length-lengthDATA);
+            model->setData(index, fileName);
+            return;
+        }else{
+            model->setData(index, filePath);
+            return;
+        }
+
     }
 }
 

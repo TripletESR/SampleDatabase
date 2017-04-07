@@ -47,6 +47,10 @@ MainWindow::MainWindow(QWidget *parent) :
     sample = new QSqlRelationalTableModel(ui->sampleView);
     SetupSampleTableView();
 
+    //===================== set up the sample-table
+    data = new QSqlRelationalTableModel(ui->dataView);
+    SetupDataTableView();
+
     //====================== Other things
     editorChemical = NULL;
     editorSolvent = NULL;
@@ -159,6 +163,40 @@ void MainWindow::SetupSampleTableView()
 
 }
 
+void MainWindow::SetupDataTableView()
+{
+    data->clear();
+    data->setTable("Data");
+    data->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    data->select();
+
+    int sampleIdx = data->fieldIndex("Sample");
+    int dateIdx = data->fieldIndex("Date");
+    int laserIdx = data->fieldIndex("Laser");
+    int pathIdx = data->fieldIndex("PATH");
+
+    data->setHeaderData(laserIdx, Qt::Horizontal, "Laser");
+    data->setHeaderData(4, Qt::Horizontal, "Repeat\nRate [Hz]");
+    data->setHeaderData(5, Qt::Horizontal, "Accum.");
+    data->setHeaderData(6, Qt::Horizontal, "Point");
+    data->setHeaderData(7, Qt::Horizontal, "Temp.\n[K]");
+    data->setHeaderData(8, Qt::Horizontal, "Time\nRange[us]");
+
+    data->setRelation(sampleIdx, QSqlRelation("Sample", "NAME", "NAME"));
+    data->setRelation(laserIdx, QSqlRelation("Laser", "Name", "Name"));
+
+    ui->dataView->setModel(data);
+    ui->dataView->resizeColumnsToContents();
+    ui->dataView->setSelectionMode( QAbstractItemView::SingleSelection );
+    ui->dataView->setItemDelegate(new QSqlRelationalDelegate(ui->dataView));
+    ui->dataView->setItemDelegateForColumn(dateIdx, new DateFormatDelegate());
+    ui->dataView->setItemDelegateForColumn(pathIdx, new OpenFileDelegate(2));
+
+    ui->dataView->setColumnWidth(sampleIdx, 100);
+    ui->dataView->setColumnWidth(dateIdx, 100);
+    ui->dataView->setColumnWidth(laserIdx, 60);
+}
+
 int MainWindow::loadConfigurationFile()
 {
     QString path = DESKTOP_PATH + "/ProgramsConfiguration.ini";
@@ -246,19 +284,18 @@ void MainWindow::on_pushButton_editLaser_clicked()
     editorLaser->show();
 }
 
-
 void MainWindow::on_pushButton_sumbitSample_clicked()
 {
-    //sample->database().transaction();
     if (sample->submitAll()) {
-    //    sample->database().commit();
         statusBar()->showMessage("Sample Database wriiten.");
+        SetupDataTableView();
     } else {
         sample->database().rollback();
         QMessageBox::warning(this, tr("Cached Table"),
                              tr("The database reported an error: %1")
                              .arg(sample->lastError().text()));
     }
+
 }
 
 void MainWindow::on_pushButton_addSampleEntry_clicked()
@@ -271,7 +308,8 @@ void MainWindow::on_pushButton_addSampleEntry_clicked()
     QString sampleName = "Sample-" + QString::number(row+1);
     sample->setData(sample->index(row,1), sampleName);
     QDate date;
-    sample->setData(sample->index(row, 6), date.currentDate().toString("yyyy-MM-dd"));
+    int dateIdx = sample->fieldIndex("Date");
+    sample->setData(sample->index(row, dateIdx), date.currentDate().toString("yyyy-MM-dd"));
 }
 
 void MainWindow::on_pushButton_deleteSampleEntry_clicked()
@@ -292,3 +330,47 @@ void MainWindow::on_pushButton_revertSample_clicked()
     statusBar()->showMessage("revert add/delete.");
 }
 
+
+void MainWindow::on_pushButton_addDataEntry_clicked()
+{
+    int row = data->rowCount();
+    data->insertRow(row);
+    ui->dataView->scrollToBottom();
+
+    //set default data
+    QDate date;
+    int dateIdx = data->fieldIndex("Date");
+    data->setData(data->index(row, dateIdx), date.currentDate().toString("yyyy-MM-dd"));
+}
+
+void MainWindow::on_pushButton_deleteDataEntry_clicked()
+{
+    QModelIndex current = ui->dataView->selectionModel()->currentIndex(); // the "current" item
+    data->removeRow(current.row());
+
+    QString msg;
+    msg.sprintf("Deleted Row #%d.", current.row()+1);
+    statusBar()->showMessage(msg);
+}
+
+void MainWindow::on_pushButton_revertData_clicked()
+{
+    data->revertAll();
+    data->submitAll();
+
+    statusBar()->showMessage("revert add/delete.");
+}
+
+void MainWindow::on_pushButton_submitData_clicked()
+{
+    //sample->database().transaction();
+    if (data->submitAll()) {
+    //    sample->database().commit();
+        statusBar()->showMessage("Sample Database wriiten.");
+    } else {
+        data->database().rollback();
+        QMessageBox::warning(this, tr("Cached Table"),
+                             tr("The database reported an error: %1")
+                             .arg(data->lastError().text()));
+    }
+}
