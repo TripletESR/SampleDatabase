@@ -9,6 +9,9 @@
 #include <QVector>
 #include <QMessageBox>
 #include <QImage>
+#include <QFile>
+#include <QFileDialog>
+#include <QTextStream>
 #include "constant.h"
 #include "tableeditor.h"
 #include "dateformatdelegate.h"
@@ -29,6 +32,7 @@ public:
 
     QStringList GetTableColEntries(QString tableName, int col);
     int GetTableColNumber(QString tableName);
+    void SaveTable(QString tableName, QString showName, QTextStream &stream);
 
     void ShowTable(QString tableName);
 
@@ -39,22 +43,19 @@ private slots:
 
     void on_pushButton_editChemical_clicked();
     void on_pushButton_editSolvent_clicked();
+    void on_pushButton_editLaser_clicked();
 
     void on_pushButton_sumbitSample_clicked();
     void on_pushButton_addSampleEntry_clicked();
     void on_pushButton_deleteSampleEntry_clicked();
     void on_pushButton_revertSample_clicked();
 
-
-    void on_pushButton_editLaser_clicked();
-
     void on_pushButton_addDataEntry_clicked();
-
     void on_pushButton_deleteDataEntry_clicked();
-
     void on_pushButton_revertData_clicked();
-
     void on_pushButton_submitData_clicked();
+
+    void on_actionOutput_tables_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -14,8 +14,8 @@
    <string>Sample Database</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout" rowstretch="1,4,4">
-    <item row="2" column="0" colspan="3">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="1,4,4,0" columnstretch="1,1,1">
+    <item row="3" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
        <string>Data</string>
@@ -99,12 +99,12 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0" colspan="3">
+    <item row="2" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Sample</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3" columnstretch="8,1">
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="8,0">
        <item row="0" column="0" rowspan="5">
         <widget class="QTableView" name="sampleView"/>
        </item>
@@ -144,24 +144,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_addSampleEntry">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Add Entry</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="pushButton_deleteSampleEntry">
          <property name="minimumSize">
@@ -180,10 +162,28 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_addSampleEntry">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Add Entry</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="2">
+    <item row="1" column="2">
      <widget class="QPushButton" name="pushButton_editLaser">
       <property name="minimumSize">
        <size>
@@ -201,7 +201,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QPushButton" name="pushButton_editChemical">
       <property name="minimumSize">
        <size>
@@ -219,7 +219,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="1" column="1">
      <widget class="QPushButton" name="pushButton_editSolvent">
       <property name="minimumSize">
        <size>
@@ -237,6 +237,13 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="0" colspan="3">
+     <widget class="QLineEdit" name="lineEdit_dbName">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -248,6 +255,13 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOutput_tables"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -258,6 +272,11 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOutput_tables">
+   <property name="text">
+    <string>Output tables</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

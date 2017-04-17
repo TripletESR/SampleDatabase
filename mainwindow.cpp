@@ -38,6 +38,16 @@ MainWindow::MainWindow(QWidget *parent) :
         return;
     }else{
         statusBar()->showMessage("Database openned. | " + DB_PATH);
+        QString fileInfo = DB_PATH + " | ";
+        QFileInfo info(DB_PATH);
+        double size = info.size()/1024. ; // in kb;
+        fileInfo += "Size : " +  QString::number(size) + " kb | ";
+        QDateTime date = info.lastModified();
+        fileInfo += "Last modified date : " + date.toString("yyyy-MM-dd, HH:mm:ss") + " | ";
+        QDateTime today;
+        double dayDiff = date.secsTo(today.currentDateTime()) / 24./ 2600.;
+        fileInfo += "Last modified from today : " + QString::number(dayDiff) + " day(s) |";
+        ui->lineEdit_dbName->setText( fileInfo );
     }
 
     QStringList tableList = db.tables();
@@ -86,6 +96,31 @@ int MainWindow::GetTableColNumber(QString tableName)
     QSqlQuery query;
     query.exec("SELECT *FROM " + tableName);
     return query.record().count();
+}
+
+void MainWindow::SaveTable(QString tableName, QString showName, QTextStream &stream)
+{
+    stream <<"================== " + showName +"\n";
+
+    QSqlQuery query;
+
+    query.exec("SELECT *FROM " + tableName);
+    int col = query.record().count();
+
+   for( int i = 0; i < col; i++){
+       stream << query.record().fieldName(i);
+       if( i < col-1 ) stream << ", ";
+   }
+   stream << "\n";
+
+    while(query.next()){
+        for( int i = 0; i < col; i++){
+            stream << query.value(i).toString();
+            if( i < col-1 )stream << ", ";
+        }
+        stream << "\n";
+    }
+
 }
 
 void MainWindow::ShowTable(QString tableName)
@@ -380,4 +415,43 @@ void MainWindow::on_pushButton_submitData_clicked()
                              tr("The database reported an error: %1")
                              .arg(data->lastError().text()));
     }
+}
+
+void MainWindow::on_actionOutput_tables_triggered()
+{
+
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                  "Save File as CSV or TXT",
+                                                  DESKTOP_PATH,
+                                                  "TEXT (*.txt);; CSV (*.csv)");
+
+    qDebug() << filePath;
+
+    QFile file(filePath);
+    if(!file.open(QIODevice::WriteOnly)){
+        QMessageBox msgBox;
+        msgBox.setText("Fail to open file:\n" + filePath);
+        msgBox.exec();
+        return;
+    }
+
+    QTextStream stream(&file);
+    QString text;
+
+    QDateTime date;
+    text = "#### Saving datebase tables into txt or cvs file. \n";
+    stream << text;
+    text = "#### Date : " + date.currentDateTime().toString("yyyy-MM-dd, HH:mm:ss") + "\n";
+    stream << text;
+    text = "#### DB : " + DB_PATH + "\n";
+    stream << text;
+
+    SaveTable("Chemical", "Pol. Agent", stream);
+    SaveTable("Solvent", "Host/Solvent", stream);
+    SaveTable("Laser", "Laser", stream);
+    SaveTable("Sample", "Sample", stream);
+    SaveTable("Data", "Data", stream);
+
+    file.close();
+
 }
