@@ -151,7 +151,7 @@ void MainWindow::SetupSampleTableView()
     //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
 
     //for some unknown reasons, the column header names are needed to rename;
-    sample->setHeaderData(chemicalIdx, Qt::Horizontal, "Chemical");
+    sample->setHeaderData(chemicalIdx, Qt::Horizontal, "Pol. Agent");
     sample->setHeaderData(solventIdx, Qt::Horizontal, "Solvent");
 
     ui->sampleView->setColumnWidth(sample->fieldIndex("ID"), 30);
@@ -174,13 +174,18 @@ void MainWindow::SetupDataTableView()
     int dateIdx = data->fieldIndex("Date");
     int laserIdx = data->fieldIndex("Laser");
     int pathIdx = data->fieldIndex("PATH");
+    int repIdx = data->fieldIndex("repetittion");
+    int accIdx = data->fieldIndex("Average");
+    int pointIdx = data->fieldIndex("DataPoint");
+    int tempIdx = data->fieldIndex("Temperature");
+    int timeRangeIdx = data->fieldIndex("TimeRange");
 
     data->setHeaderData(laserIdx, Qt::Horizontal, "Laser");
-    data->setHeaderData(4, Qt::Horizontal, "Repeat\nRate [Hz]");
-    data->setHeaderData(5, Qt::Horizontal, "Accum.");
-    data->setHeaderData(6, Qt::Horizontal, "Point");
-    data->setHeaderData(7, Qt::Horizontal, "Temp.\n[K]");
-    data->setHeaderData(8, Qt::Horizontal, "Time\nRange[us]");
+    data->setHeaderData(repIdx, Qt::Horizontal, "Repeat\nRate [Hz]");
+    data->setHeaderData(accIdx, Qt::Horizontal, "Accum.");
+    data->setHeaderData(pointIdx, Qt::Horizontal, "Data\nPoint");
+    data->setHeaderData(tempIdx, Qt::Horizontal, "Temp.\n[K]");
+    data->setHeaderData(timeRangeIdx, Qt::Horizontal, "Time\nRange[us]");
 
     data->setRelation(sampleIdx, QSqlRelation("Sample", "NAME", "NAME"));
     data->setRelation(laserIdx, QSqlRelation("Laser", "Name", "Name"));
@@ -192,9 +197,9 @@ void MainWindow::SetupDataTableView()
     ui->dataView->setItemDelegateForColumn(dateIdx, new DateFormatDelegate());
     ui->dataView->setItemDelegateForColumn(pathIdx, new OpenFileDelegate(2));
 
-    ui->dataView->setColumnWidth(sampleIdx, 100);
+    ui->dataView->setColumnWidth(sampleIdx, 120);
     ui->dataView->setColumnWidth(dateIdx, 100);
-    ui->dataView->setColumnWidth(laserIdx, 60);
+    ui->dataView->setColumnWidth(laserIdx, 100);
 }
 
 int MainWindow::loadConfigurationFile()
@@ -262,7 +267,7 @@ int MainWindow::loadConfigurationFile()
 void MainWindow::on_pushButton_editChemical_clicked()
 {
     editorChemical = new TableEditor("Chemical");
-    editorChemical->resize(500,200);
+    editorChemical->resize(600,200);
     disconnect(editorChemical);
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorChemical->show();
@@ -271,7 +276,7 @@ void MainWindow::on_pushButton_editChemical_clicked()
 void MainWindow::on_pushButton_editSolvent_clicked()
 {
     editorSolvent = new TableEditor("Solvent");
-    editorSolvent->resize(300,200);
+    editorSolvent->resize(400,200);
     disconnect(editorSolvent);
     connect(editorSolvent, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorSolvent->show();
@@ -280,7 +285,9 @@ void MainWindow::on_pushButton_editSolvent_clicked()
 void MainWindow::on_pushButton_editLaser_clicked()
 {
     editorLaser = new TableEditor("Laser");
-    editorLaser->resize(300,200);
+    editorLaser->resize(400,200);
+    disconnect(editorLaser);
+    connect(editorLaser, SIGNAL(closed(QString)), this, SLOT(SetupDataTableView()));
     editorLaser->show();
 }
 
