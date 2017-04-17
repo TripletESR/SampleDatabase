@@ -14,7 +14,7 @@
    <string>Sample Database</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout" rowstretch="1,4,4,0" columnstretch="1,1,1">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,4,4" columnstretch="1,1,1">
     <item row="3" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">

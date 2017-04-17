@@ -168,13 +168,14 @@ void MainWindow::SetupSampleTableView()
     sample->select();
 
     //set relation, so that can choose directly on the table
-    int chemicalIdx = sample->fieldIndex("Chemical");
-    sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "NAME", "NAME"));
-    int solventIdx = sample->fieldIndex("Solvent");
-    sample->setRelation(solventIdx, QSqlRelation("Solvent", "NAME", "NAME"));
+    int chemicalIdx = sample->fieldIndex("ChemicalID");
+    int solventIdx = sample->fieldIndex("SolventID");
     int dateIdx = sample->fieldIndex("Date");
     int picPathIdx = sample->fieldIndex("PicPath");
     int spectPathIdx = sample->fieldIndex("SpectrumPath");
+
+    sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "ID", "NAME"));
+    sample->setRelation(solventIdx, QSqlRelation("Solvent", "ID", "NAME"));
 
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
@@ -194,6 +195,8 @@ void MainWindow::SetupSampleTableView()
     ui->sampleView->setColumnWidth(solventIdx, 100);
     ui->sampleView->setColumnWidth(dateIdx, 100);
 
+    sample->submitAll();
+
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
 }
@@ -205,9 +208,9 @@ void MainWindow::SetupDataTableView()
     data->setEditStrategy(QSqlTableModel::OnManualSubmit);
     data->select();
 
-    int sampleIdx = data->fieldIndex("Sample");
+    int sampleIdx = data->fieldIndex("SampleID");
     int dateIdx = data->fieldIndex("Date");
-    int laserIdx = data->fieldIndex("Laser");
+    int laserIdx = data->fieldIndex("LaserID");
     int pathIdx = data->fieldIndex("PATH");
     int repIdx = data->fieldIndex("repetittion");
     int accIdx = data->fieldIndex("Average");
@@ -215,6 +218,7 @@ void MainWindow::SetupDataTableView()
     int tempIdx = data->fieldIndex("Temperature");
     int timeRangeIdx = data->fieldIndex("TimeRange");
 
+    data->setHeaderData(sampleIdx, Qt::Horizontal, "Sample");
     data->setHeaderData(laserIdx, Qt::Horizontal, "Laser");
     data->setHeaderData(repIdx, Qt::Horizontal, "Repeat\nRate [Hz]");
     data->setHeaderData(accIdx, Qt::Horizontal, "Accum.");
@@ -222,8 +226,8 @@ void MainWindow::SetupDataTableView()
     data->setHeaderData(tempIdx, Qt::Horizontal, "Temp.\n[K]");
     data->setHeaderData(timeRangeIdx, Qt::Horizontal, "Time\nRange[us]");
 
-    data->setRelation(sampleIdx, QSqlRelation("Sample", "NAME", "NAME"));
-    data->setRelation(laserIdx, QSqlRelation("Laser", "Name", "Name"));
+    data->setRelation(sampleIdx, QSqlRelation("Sample", "ID", "NAME"));
+    data->setRelation(laserIdx, QSqlRelation("Laser", "ID", "Name"));
 
     ui->dataView->setModel(data);
     ui->dataView->resizeColumnsToContents();
@@ -232,9 +236,12 @@ void MainWindow::SetupDataTableView()
     ui->dataView->setItemDelegateForColumn(dateIdx, new DateFormatDelegate());
     ui->dataView->setItemDelegateForColumn(pathIdx, new OpenFileDelegate(2));
 
-    ui->dataView->setColumnWidth(sampleIdx, 120);
+    ui->dataView->setColumnWidth(sampleIdx, 150);
     ui->dataView->setColumnWidth(dateIdx, 100);
-    ui->dataView->setColumnWidth(laserIdx, 100);
+    ui->dataView->setColumnWidth(laserIdx, 120);
+
+    data->submitAll();
+
 }
 
 int MainWindow::loadConfigurationFile()
@@ -337,6 +344,8 @@ void MainWindow::on_pushButton_sumbitSample_clicked()
                              tr("The database reported an error: %1")
                              .arg(sample->lastError().text()));
     }
+
+    SetupDataTableView();
 
 }
 
