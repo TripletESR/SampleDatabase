@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QCloseEvent>
 #include "constant.h"
 #include "tableeditor.h"
 #include "dateformatdelegate.h"
@@ -37,6 +38,8 @@ public:
     void ShowTable(QString tableName);
 
 private slots:
+    void closeEvent(QCloseEvent *event);
+
     void SetupSampleTableView();
     void SetupDataTableView();
     int loadConfigurationFile();

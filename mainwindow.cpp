@@ -11,15 +11,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if(configFileFlag == 1) {
         QMessageBox msgBox;
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
         msgBox.setText("The configuration file not exist.\n"
                        "please check the ProgramConfiguration.ini exist on Desktop.");
         msgBox.exec();
     }else if(configFileFlag == 2){
         QMessageBox msgBox;
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
         msgBox.setText("The configuration file fail to open.");
         msgBox.exec();
     }else if(configFileFlag == 3){
         QMessageBox msgBox;
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
         msgBox.setText("Some items are missing in configuration file.");
         msgBox.exec();
     }
@@ -74,6 +77,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete editorChemical;
+    delete editorSolvent;
+    delete editorLaser;
     delete ui;
 }
 
@@ -158,6 +164,13 @@ void MainWindow::ShowTable(QString tableName)
         msg.clear();
     }
 
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //event->ignore();
+    QApplication::closeAllWindows();
+    event->accept();
 }
 
 void MainWindow::SetupSampleTableView()
@@ -310,6 +323,7 @@ void MainWindow::on_pushButton_editChemical_clicked()
 {
     editorChemical = new TableEditor("Chemical");
     editorChemical->resize(600,200);
+    editorChemical->setWindowFlags(Qt::WindowStaysOnTopHint);
     disconnect(editorChemical);
     connect(editorChemical, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorChemical->show();
@@ -319,6 +333,7 @@ void MainWindow::on_pushButton_editSolvent_clicked()
 {
     editorSolvent = new TableEditor("Solvent");
     editorSolvent->resize(400,200);
+    editorSolvent->setWindowFlags(Qt::WindowStaysOnTopHint);
     disconnect(editorSolvent);
     connect(editorSolvent, SIGNAL(closed(QString)), this, SLOT(SetupSampleTableView()));
     editorSolvent->show();
@@ -328,6 +343,7 @@ void MainWindow::on_pushButton_editLaser_clicked()
 {
     editorLaser = new TableEditor("Laser");
     editorLaser->resize(400,200);
+    editorLaser->setWindowFlags(Qt::WindowStaysOnTopHint);
     disconnect(editorLaser);
     connect(editorLaser, SIGNAL(closed(QString)), this, SLOT(SetupDataTableView()));
     editorLaser->show();
