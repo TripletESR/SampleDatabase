@@ -39,6 +39,7 @@ public:
 
 private slots:
     void closeEvent(QCloseEvent *event);
+    void ErrorAndClose(QString msg);
 
     void SetupSampleTableView();
     void SetupDataTableView();

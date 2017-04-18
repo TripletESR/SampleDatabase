@@ -10,32 +10,24 @@ MainWindow::MainWindow(QWidget *parent) :
     int configFileFlag  = loadConfigurationFile();
 
     if(configFileFlag == 1) {
-        QMessageBox msgBox;
-        msgBox.setText("The configuration file not exist.\n"
-                       "please check the ProgramConfiguration.ini exist on Desktop.");
-        msgBox.exec();
+        ErrorAndClose("The configuration file not exist.\n"
+                      "please check the ProgramConfiguration.ini exist on Desktop.");
     }else if(configFileFlag == 2){
-        QMessageBox msgBox;
-        msgBox.setText("The configuration file fail to open.");
-        msgBox.exec();
+        ErrorAndClose("The configuration file fail to open.");
     }else if(configFileFlag == 3){
-        QMessageBox msgBox;
-        msgBox.setText("Some items are missing in configuration file.");
-        msgBox.exec();
+        ErrorAndClose("Some items are missing in configuration file.");
     }
 
     db = QSqlDatabase::addDatabase("QSQLITE");
     if( QFile::exists(DB_PATH) ){
         qDebug() << "database exist : " << DB_PATH ;
     }else{
-        qDebug() << "No database : " << DB_PATH ;
-        return;
+        ErrorAndClose("No database : " + DB_PATH) ;
     }
     db.setDatabaseName(DB_PATH);
     db.open();
     if( !db.isOpen()){
-        qDebug() << "Database open Error : " + DB_PATH ;
-        return;
+        ErrorAndClose("Database open Error : " + DB_PATH );
     }else{
         statusBar()->showMessage("Database openned. | " + DB_PATH);
         QString fileInfo = DB_PATH + " | ";
@@ -74,9 +66,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete editorChemical;
-    delete editorSolvent;
-    delete editorLaser;
     delete ui;
 }
 
@@ -168,6 +157,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
     //event->ignore();
     QApplication::closeAllWindows();
     event->accept();
+}
+
+void MainWindow::ErrorAndClose(QString msg)
+{
+    QMessageBox msgBox;
+    msgBox.setText(msg);
+    msgBox.exec();
+    QTimer::singleShot(0, this, SLOT(close()));
 }
 
 void MainWindow::SetupSampleTableView()

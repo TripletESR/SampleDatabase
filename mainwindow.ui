@@ -14,6 +14,11 @@
    <string>Sample Database</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,4,4" columnstretch="1,1,1">
     <item row="3" column="0" colspan="3">
      <widget class="QGroupBox" name="groupBox">
@@ -104,7 +109,7 @@
       <property name="title">
        <string>Sample</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3" columnstretch="8,0">
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="8,1">
        <item row="0" column="0" rowspan="5">
         <widget class="QTableView" name="sampleView"/>
        </item>
