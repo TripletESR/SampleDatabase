@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //===================== set up the sample-table
     data = new QSqlRelationalTableModel(ui->dataView);
-    SetupDataTableView();
+    SetupESRDataTableView();
 
     //====================== Other things
     editorChemical = NULL;
@@ -172,7 +172,6 @@ void MainWindow::SetupSampleTableView()
     sample->clear();
     sample->setTable("Sample");
     sample->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    sample->select();
 
     //set relation, so that can choose directly on the table
     int chemicalIdx = sample->fieldIndex("ChemicalID");
@@ -181,8 +180,13 @@ void MainWindow::SetupSampleTableView()
     int picPathIdx = sample->fieldIndex("PicPath");
     int spectPathIdx = sample->fieldIndex("SpectrumPath");
 
+    //for some unknown reasons, the column header names are needed to rename;
+    sample->setHeaderData(chemicalIdx, Qt::Horizontal, "Pol. Agent");
+    sample->setHeaderData(solventIdx, Qt::Horizontal, "Solvent");
+
     sample->setRelation(chemicalIdx, QSqlRelation("Chemical", "ID", "NAME"));
     sample->setRelation(solventIdx, QSqlRelation("Solvent", "ID", "NAME"));
+    sample->select();
 
     ui->sampleView->setModel(sample);
     ui->sampleView->resizeColumnsToContents();
@@ -193,33 +197,26 @@ void MainWindow::SetupSampleTableView()
     ui->sampleView->setSelectionMode(QAbstractItemView::SingleSelection);
     //ui->sampleView->setColumnHidden(sample->fieldIndex("ID"), true);
 
-    //for some unknown reasons, the column header names are needed to rename;
-    sample->setHeaderData(chemicalIdx, Qt::Horizontal, "Pol. Agent");
-    sample->setHeaderData(solventIdx, Qt::Horizontal, "Solvent");
-
     ui->sampleView->setColumnWidth(sample->fieldIndex("ID"), 30);
     ui->sampleView->setColumnWidth(chemicalIdx, 100);
     ui->sampleView->setColumnWidth(solventIdx, 100);
     ui->sampleView->setColumnWidth(dateIdx, 100);
 
-    sample->submitAll();
-
     //connect(ui->pushButton_sumbitSample, SIGNAL(clicked()), this, SLOT(submit()));
 
 }
 
-void MainWindow::SetupDataTableView()
+void MainWindow::SetupESRDataTableView()
 {
     data->clear();
     data->setTable("Data");
     data->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    data->select();
 
     int sampleIdx = data->fieldIndex("SampleID");
     int dateIdx = data->fieldIndex("Date");
     int laserIdx = data->fieldIndex("LaserID");
     int pathIdx = data->fieldIndex("PATH");
-    int repIdx = data->fieldIndex("repetittion");
+    int repIdx = data->fieldIndex("repetition");
     int accIdx = data->fieldIndex("Average");
     int pointIdx = data->fieldIndex("DataPoint");
     int tempIdx = data->fieldIndex("Temperature");
@@ -227,7 +224,7 @@ void MainWindow::SetupDataTableView()
 
     data->setHeaderData(sampleIdx, Qt::Horizontal, "Sample");
     data->setHeaderData(laserIdx, Qt::Horizontal, "Laser");
-    data->setHeaderData(repIdx, Qt::Horizontal, "Repeat\nRate [Hz]");
+    data->setHeaderData(repIdx, Qt::Horizontal, "Trig.\nRate [Hz]");
     data->setHeaderData(accIdx, Qt::Horizontal, "Accum.");
     data->setHeaderData(pointIdx, Qt::Horizontal, "Data\nPoint");
     data->setHeaderData(tempIdx, Qt::Horizontal, "Temp.\n[K]");
@@ -235,6 +232,7 @@ void MainWindow::SetupDataTableView()
 
     data->setRelation(sampleIdx, QSqlRelation("Sample", "ID", "NAME"));
     data->setRelation(laserIdx, QSqlRelation("Laser", "ID", "Name"));
+    data->select();
 
     ui->dataView->setModel(data);
     ui->dataView->resizeColumnsToContents();
@@ -247,8 +245,55 @@ void MainWindow::SetupDataTableView()
     ui->dataView->setColumnWidth(dateIdx, 100);
     ui->dataView->setColumnWidth(laserIdx, 120);
 
-    data->submitAll();
+}
 
+void MainWindow::SetupNMRDataTableView()
+{
+    data->clear();
+    data->setTable("NMRData");
+    data->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+    int sampleIdx = data->fieldIndex("SampleID");
+    int dateIdx = data->fieldIndex("Date");
+    int magIdx = data->fieldIndex("MagField");
+    int laserIdx = data->fieldIndex("LaserID");
+    int pathIdx = data->fieldIndex("Path");
+    int repIdx = data->fieldIndex("repetition");
+    int accIdx = data->fieldIndex("Accumulation");
+    int pointIdx = data->fieldIndex("DataPoint");
+    int tempIdx = data->fieldIndex("Temperature");
+    int timeRangeIdx = data->fieldIndex("TimeRange");
+    int commentIdx = data->fieldIndex("Comment");
+
+    data->setHeaderData(sampleIdx, Qt::Horizontal, "Sample");
+    data->setHeaderData(laserIdx, Qt::Horizontal, "Laser");
+    data->setHeaderData(magIdx, Qt::Horizontal, "Mag.\nField [mT]");
+    data->setHeaderData(repIdx, Qt::Horizontal, "Trig.\nRate [Hz]");
+    data->setHeaderData(accIdx, Qt::Horizontal, "Accum.");
+    data->setHeaderData(pointIdx, Qt::Horizontal, "Data\nPoint");
+    data->setHeaderData(tempIdx, Qt::Horizontal, "Temp.\n[K]");
+    data->setHeaderData(timeRangeIdx, Qt::Horizontal, "Time\nRange[us]");
+
+    data->setRelation(sampleIdx, QSqlRelation("Sample", "ID", "NAME"));
+    data->setRelation(laserIdx, QSqlRelation("Laser", "ID", "Name"));
+    data->select(); // kind of finish the setting;
+
+    QAbstractItemDelegate * normalDelegate = ui->dataView->itemDelegateForColumn(sampleIdx);
+
+    ui->dataView->setModel(data);
+    ui->dataView->resizeColumnsToContents();
+    ui->dataView->setSelectionMode( QAbstractItemView::SingleSelection );
+    ui->dataView->setItemDelegate(new QSqlRelationalDelegate(ui->dataView));
+    ui->dataView->setItemDelegateForColumn(commentIdx, normalDelegate);
+    ui->dataView->setItemDelegateForColumn(dateIdx, new DateFormatDelegate());
+    ui->dataView->setItemDelegateForColumn(pathIdx, new OpenFileDelegate(2));
+
+    ui->dataView->setColumnWidth(sampleIdx, 150);
+    ui->dataView->setColumnWidth(dateIdx, 100);
+    ui->dataView->setColumnWidth(laserIdx, 120);
+
+    //data->submit();
+    //data->submitAll();
 }
 
 int MainWindow::loadConfigurationFile()
@@ -339,7 +384,7 @@ void MainWindow::on_pushButton_editLaser_clicked()
     editorLaser->resize(400,200);
     editorLaser->setWindowFlags(Qt::WindowStaysOnTopHint);
     disconnect(editorLaser);
-    connect(editorLaser, SIGNAL(closed(QString)), this, SLOT(SetupDataTableView()));
+    connect(editorLaser, SIGNAL(closed(QString)), this, SLOT(SetupESRDataTableView()));
     editorLaser->show();
 }
 
@@ -347,7 +392,7 @@ void MainWindow::on_pushButton_sumbitSample_clicked()
 {
     if (sample->submitAll()) {
         statusBar()->showMessage("Sample Database wriiten.");
-        SetupDataTableView();
+        SetupESRDataTableView();
     } else {
         sample->database().rollback();
         QMessageBox::warning(this, tr("Cached Table"),
@@ -355,7 +400,7 @@ void MainWindow::on_pushButton_sumbitSample_clicked()
                              .arg(sample->lastError().text()));
     }
 
-    SetupDataTableView();
+    SetupESRDataTableView();
 
 }
 
@@ -473,4 +518,14 @@ void MainWindow::on_actionOutput_tables_triggered()
 
     file.close();
 
+}
+
+void MainWindow::on_radioButton_ESRData_clicked()
+{
+    SetupESRDataTableView();
+}
+
+void MainWindow::on_radioButton_NMRData_clicked()
+{
+    SetupNMRDataTableView();
 }

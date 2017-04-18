@@ -42,7 +42,8 @@ private slots:
     void ErrorAndClose(QString msg);
 
     void SetupSampleTableView();
-    void SetupDataTableView();
+    void SetupESRDataTableView();
+    void SetupNMRDataTableView();
     int loadConfigurationFile();
 
     void on_pushButton_editChemical_clicked();
@@ -60,6 +61,10 @@ private slots:
     void on_pushButton_submitData_clicked();
 
     void on_actionOutput_tables_triggered();
+
+    void on_radioButton_ESRData_clicked();
+
+    void on_radioButton_NMRData_clicked();
 
 private:
     Ui::MainWindow *ui;
