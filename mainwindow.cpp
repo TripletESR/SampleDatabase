@@ -11,18 +11,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if(configFileFlag == 1) {
         QMessageBox msgBox;
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
         msgBox.setText("The configuration file not exist.\n"
                        "please check the ProgramConfiguration.ini exist on Desktop.");
         msgBox.exec();
     }else if(configFileFlag == 2){
         QMessageBox msgBox;
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
         msgBox.setText("The configuration file fail to open.");
         msgBox.exec();
     }else if(configFileFlag == 3){
         QMessageBox msgBox;
-        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
         msgBox.setText("Some items are missing in configuration file.");
         msgBox.exec();
     }
